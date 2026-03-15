@@ -1,3 +1,28 @@
+backend/secrets.toml
+orion/backend/secrets.toml
+backend/venv/
+backend/__pycache__/
+# Environment and secrets files
+backend/secrets.toml
+backend/orion/backend/secrets.toml
+
+# Virtual environment
+backend/venv/
+
+# Python cache
+backend/__pycache__/
+
+
+# Ignore specific files that should not be tracked
+backend/question_cache.json
+
+# Ignore large directories that contain data or indexes
+backend/content_index/
+backend/dummy_exam_index/
+backend/faiss_exam_index/
+backend/faiss_index/
+backend/faiss_video_index/
+backend/public_video/
 # v0 runtime files
 __v0_runtime_loader.js
 __v0_devtools.tsx
