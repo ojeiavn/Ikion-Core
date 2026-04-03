@@ -1,3 +1,47 @@
+backend/secrets.toml
+orion/backend/secrets.toml
+backend/venv/
+backend/myvenv/
+.venv/
+venv/
+backend/__pycache__/
+__pycache__/
+*.pyc
+*.tsbuildinfo
+# Environment and secrets files
+backend/secrets.toml
+backend/orion/backend/secrets.toml
+backend/.env
+.env
+.env.*
+!.env.example
+!.env.local.example
+
+# Virtual environment
+backend/venv/
+backend/myvenv/
+
+# Python cache
+backend/__pycache__/
+backend/orion/backend/__pycache__/
+
+
+# Ignore specific files that should not be tracked
+backend/question_cache.json
+
+# Ignore large directories that contain data or indexes
+backend/content_index/
+backend/dummy_exam_index/
+backend/faiss_exam_index/
+backend/faiss_index/
+backend/faiss_video_index/
+backend/public_video/
+backend/data/
+backend/backend/data/
+backend/backend/
+*.db
+*.sqlite
+*.sqlite3
 # v0 runtime files
 __v0_runtime_loader.js
 __v0_devtools.tsx
@@ -8,3 +52,10 @@ node_modules/
 .next/
 .env*.local
 .DS_Store
+.vscode/
+.continue/
+macOS
+google-cloud-sdk/
+google-cloud-cli-*.tar.gz
+
+backend/credentials/google-service-account.json
