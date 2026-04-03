@@ -1,0 +1,44 @@
+import Image from "next/image"
+import { cn } from "@/lib/utils"
+
+interface OrionLogoProps {
+  className?: string
+  size?: "sm" | "md" | "lg"
+  showText?: boolean
+}
+
+export function OrionLogo({
+  className,
+  size = "lg",
+  showText = true,
+}: OrionLogoProps) {
+  const sizes = {
+    sm: { icon: "h-10 w-10", text: "text-lg" },
+    md: { icon: "h-14 w-14", text: "text-[1.95rem]" },
+    lg: { icon: "h-[4.6rem] w-[4.6rem]", text: "text-[2.15rem]" },
+  }
+
+  return (
+    <div className={cn("inline-flex items-center gap-2 leading-none", className)}>
+      <div className={cn("orion-logo-mark relative shrink-0 overflow-hidden translate-y-[6px]", sizes[size].icon)}>
+        <Image
+          src="/Orion Logo.png"
+          alt="Orion"
+          fill
+          className="orion-logo-image object-contain [object-position:56%_50%] scale-[2.12]"
+        />
+      </div>
+
+      {showText && (
+        <span
+          className={cn(
+            "orion-logo-text leading-none font-semibold tracking-tight text-sidebar-foreground translate-y-[-1px]",
+            sizes[size].text
+          )}
+        >
+          Orion
+        </span>
+      )}
+    </div>
+  )
+}
