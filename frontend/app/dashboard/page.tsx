@@ -11,15 +11,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Progress } from "@/components/ui/progress"
 import { useActiveWorkspaceId } from "@/hooks/use-active-workspace"
 import {
-  OrionAsset,
-  OrionCorpusInspection,
-  OrionInsights,
-  OrionQueryEvent,
-  OrionWorkspaceSummary,
+  IkionAsset,
+  IkionCorpusInspection,
+  IkionInsights,
+  IkionQueryEvent,
+  IkionWorkspaceSummary,
   formatUtcTimestamp,
   getBackendBaseUrl,
-  orionFetch,
-} from "@/lib/orion-api"
+  ikionFetch,
+} from "@/lib/ikion-api"
 import {
   AlertCircle,
   ArrowRight,
@@ -49,7 +49,7 @@ function formatCorpusLoadError(message: string) {
     normalized.includes("transporterror") ||
     normalized.includes("drive")
   ) {
-    return "Active corpus metadata is temporarily unavailable because Orion could not reach its storage provider."
+    return "Active corpus metadata is temporarily unavailable because Ikion could not reach its storage provider."
   }
   return message
 }
@@ -57,11 +57,11 @@ function formatCorpusLoadError(message: string) {
 export default function StudentDashboard() {
   const { workspaceId } = useActiveWorkspaceId()
   const backendBase = useMemo(() => getBackendBaseUrl(), [])
-  const [workspaces, setWorkspaces] = useState<OrionWorkspaceSummary[]>([])
-  const [assets, setAssets] = useState<OrionAsset[]>([])
-  const [queries, setQueries] = useState<OrionQueryEvent[]>([])
-  const [insights, setInsights] = useState<OrionInsights | null>(null)
-  const [corpusInspection, setCorpusInspection] = useState<OrionCorpusInspection | null>(null)
+  const [workspaces, setWorkspaces] = useState<IkionWorkspaceSummary[]>([])
+  const [assets, setAssets] = useState<IkionAsset[]>([])
+  const [queries, setQueries] = useState<IkionQueryEvent[]>([])
+  const [insights, setInsights] = useState<IkionInsights | null>(null)
+  const [corpusInspection, setCorpusInspection] = useState<IkionCorpusInspection | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [loadErrors, setLoadErrors] = useState<Record<keyof typeof EMPTY_LOAD_ERRORS, string | null>>(EMPTY_LOAD_ERRORS)
 
@@ -74,7 +74,7 @@ export default function StudentDashboard() {
       setIsLoading(true)
 
       try {
-        const workspaceList = await orionFetch<OrionWorkspaceSummary[]>("/me/workspaces", {
+        const workspaceList = await ikionFetch<IkionWorkspaceSummary[]>("/me/workspaces", {
           signal: controller.signal,
         })
         if (!isCurrent || controller.signal.aborted) return
@@ -89,10 +89,10 @@ export default function StudentDashboard() {
         }
 
         const [assetList, queryEvents, summary, corpus] = await Promise.allSettled([
-          orionFetch<OrionAsset[]>(`/workspaces/${workspaceId}/assets`, { signal: controller.signal }),
-          orionFetch<OrionQueryEvent[]>(`/workspaces/${workspaceId}/queries`, { signal: controller.signal }),
-          orionFetch<OrionInsights>(`/workspaces/${workspaceId}/insights`, { signal: controller.signal }),
-          orionFetch<OrionCorpusInspection>(`/workspaces/${workspaceId}/corpus/active`, { signal: controller.signal }),
+          ikionFetch<IkionAsset[]>(`/workspaces/${workspaceId}/assets`, { signal: controller.signal }),
+          ikionFetch<IkionQueryEvent[]>(`/workspaces/${workspaceId}/queries`, { signal: controller.signal }),
+          ikionFetch<IkionInsights>(`/workspaces/${workspaceId}/insights`, { signal: controller.signal }),
+          ikionFetch<IkionCorpusInspection>(`/workspaces/${workspaceId}/corpus/active`, { signal: controller.signal }),
         ])
         if (!isCurrent || controller.signal.aborted) return
 
@@ -168,7 +168,7 @@ export default function StudentDashboard() {
 
   const recentQuestions = useMemo(() => queries.slice(0, 3), [queries])
 
-  const resolveVideoHref = (asset: OrionAsset) => {
+  const resolveVideoHref = (asset: IkionAsset) => {
     if (workspaceId && asset.content_path) {
       return `${backendBase}/workspaces/${workspaceId}/assets/${asset.id}/content`
     }
@@ -236,7 +236,7 @@ export default function StudentDashboard() {
 
   return (
     <div className="space-y-6 p-6 lg:p-8">
-      <div className="orion-hero-panel mb-8 rounded-[1.8rem] border border-white/50 px-6 py-7 shadow-[0_24px_60px_rgba(83,63,170,0.08)]">
+      <div className="ikion-hero-panel mb-8 rounded-[1.8rem] border border-white/50 px-6 py-7 shadow-[0_24px_60px_rgba(83,63,170,0.08)]">
         <h1 className="break-words text-2xl font-bold tracking-tight">
           {activeWorkspace ? `Welcome back to ${activeWorkspace.name}` : "Workspace Dashboard"}
         </h1>
@@ -258,7 +258,7 @@ export default function StudentDashboard() {
         <Link href="/dashboard/ask">
           <Button className="gap-2">
             <MessageSquare className="h-4 w-4" />
-            Ask Orion
+            Ask Ikion
           </Button>
         </Link>
         <Link href="/dashboard/exam-prep">
@@ -276,14 +276,14 @@ export default function StudentDashboard() {
       </div>
 
       {insights?.llm_insights?.student_summary && (
-        <div className="orion-neon-card rounded-[1.45rem] border border-accent/30 bg-accent/5 p-5">
+        <div className="ikion-neon-card rounded-[1.45rem] border border-accent/30 bg-accent/5 p-5">
           <p className="text-xs uppercase tracking-wide text-accent">Student Focus</p>
           <p className="mt-2 break-words text-sm leading-7 text-foreground/90">{insights.llm_insights.student_summary}</p>
         </div>
       )}
 
       <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
-        <Card className="orion-surface-card xl:col-span-1">
+        <Card className="ikion-surface-card xl:col-span-1">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-base font-semibold">Exam Readiness</CardTitle>
@@ -312,7 +312,7 @@ export default function StudentDashboard() {
                     <p className="text-xs text-muted-foreground">Primary signal from marked answers and evaluation quality.</p>
                   </div>
                   <div className="rounded-2xl border border-border/55 border-t-transparent bg-background/45 p-3 shadow-none">
-                    <p className="text-xs uppercase tracking-wide text-muted-foreground">Ask Orion</p>
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground">Ask Ikion</p>
                     <p className="mt-1 text-lg font-semibold">{examPrep.chat_readiness_score}%</p>
                     <p className="text-xs text-muted-foreground">
                       Secondary signal from {examPrep.chat_activity_count} exam-style interaction{examPrep.chat_activity_count === 1 ? "" : "s"}.
@@ -320,7 +320,7 @@ export default function StudentDashboard() {
                   </div>
                 </div>
                 <p className="rounded-2xl border border-dashed border-border/70 bg-background/45 px-3 py-2 text-xs leading-5 text-muted-foreground">
-                  Orion keeps this intentionally strict. Strong scores require repeated high-quality exam answers, not just confident chat.
+                  Ikion keeps this intentionally strict. Strong scores require repeated high-quality exam answers, not just confident chat.
                 </p>
                 {examPrep.focus_topics.length > 0 ? (
                   <div className="flex flex-wrap gap-1.5">
@@ -346,13 +346,13 @@ export default function StudentDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="orion-surface-card xl:col-span-1">
+        <Card className="ikion-surface-card xl:col-span-1">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-base font-semibold">Recommended Exam Question</CardTitle>
               <AlertCircle className="h-4 w-4 text-muted-foreground" />
             </div>
-            <CardDescription>Past-paper practice matched to what Orion thinks you should tackle next.</CardDescription>
+            <CardDescription>Past-paper practice matched to what Ikion thinks you should tackle next.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {examPrep?.recommended_question ? (
@@ -367,13 +367,13 @@ export default function StudentDashboard() {
               </>
             ) : (
               <div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
-                Orion will recommend a targeted question once exam papers are uploaded and your learning profile has enough signal.
+                Ikion will recommend a targeted question once exam papers are uploaded and your learning profile has enough signal.
               </div>
             )}
           </CardContent>
         </Card>
 
-        <Card className="orion-surface-card xl:col-span-1">
+        <Card className="ikion-surface-card xl:col-span-1">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-base font-semibold">Managed Video Assets</CardTitle>
@@ -422,7 +422,7 @@ export default function StudentDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="orion-surface-card xl:col-span-1">
+        <Card className="ikion-surface-card xl:col-span-1">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-base font-semibold">Topic Coverage</CardTitle>
@@ -449,7 +449,7 @@ export default function StudentDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="orion-surface-card xl:col-span-1">
+        <Card className="ikion-surface-card xl:col-span-1">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-base font-semibold">Recent Questions</CardTitle>
@@ -492,7 +492,7 @@ export default function StudentDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="orion-surface-card lg:col-span-2 xl:col-span-3">
+        <Card className="ikion-surface-card lg:col-span-2 xl:col-span-3">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <div>
@@ -505,7 +505,7 @@ export default function StudentDashboard() {
           <CardContent>
             {recommendedReview.length === 0 ? (
               <div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
-                Review suggestions will appear after Orion has enough query activity to analyze.
+                Review suggestions will appear after Ikion has enough query activity to analyze.
               </div>
             ) : (
               <div className="grid gap-4 sm:grid-cols-2">

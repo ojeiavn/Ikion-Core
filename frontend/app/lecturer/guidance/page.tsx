@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Textarea } from "@/components/ui/textarea"
 import { useActiveWorkspaceId } from "@/hooks/use-active-workspace"
-import { OrionGuidancePack, formatUtcTimestamp, orionFetch } from "@/lib/orion-api"
+import { IkionGuidancePack, formatUtcTimestamp, ikionFetch } from "@/lib/ikion-api"
 import {
   AlertCircle,
   CheckCircle2,
@@ -22,7 +22,7 @@ import { toast } from "sonner"
 
 export default function GuidanceEditorPage() {
   const { workspaceId } = useActiveWorkspaceId()
-  const [guidancePacks, setGuidancePacks] = useState<OrionGuidancePack[]>([])
+  const [guidancePacks, setGuidancePacks] = useState<IkionGuidancePack[]>([])
   const [selectedPackId, setSelectedPackId] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [isLoading, setIsLoading] = useState(true)
@@ -43,7 +43,7 @@ export default function GuidanceEditorPage() {
       return
     }
 
-    const packs = await orionFetch<OrionGuidancePack[]>(`/workspaces/${workspaceId}/guidance`)
+    const packs = await ikionFetch<IkionGuidancePack[]>(`/workspaces/${workspaceId}/guidance`)
     setGuidancePacks(packs)
     setSelectedPackId((current) => current ?? packs[0]?.id ?? null)
   }
@@ -97,7 +97,7 @@ export default function GuidanceEditorPage() {
     setIsSaving(true)
     setError(null)
     try {
-      const created = await orionFetch<OrionGuidancePack>(`/workspaces/${workspaceId}/guidance`, {
+      const created = await ikionFetch<IkionGuidancePack>(`/workspaces/${workspaceId}/guidance`, {
         method: "POST",
         body: JSON.stringify({
           name: formData.name,
@@ -196,7 +196,7 @@ export default function GuidanceEditorPage() {
             <div>
               <h1 className="text-2xl font-bold tracking-tight">Guidance Pack Publisher</h1>
               <p className="mt-1 text-muted-foreground">
-                Create new guidance pack versions that shape Orion’s response style for the active workspace.
+                Create new guidance pack versions that shape Ikion’s response style for the active workspace.
               </p>
               {error && <p className="mt-2 text-sm text-destructive">{error}</p>}
             </div>
@@ -246,7 +246,7 @@ export default function GuidanceEditorPage() {
                 <CardHeader>
                   <CardTitle className="text-base">Instructions</CardTitle>
                   <CardDescription>
-                    These instructions shape how Orion responds. They do not replace evidence grounding.
+                    These instructions shape how Ikion responds. They do not replace evidence grounding.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -299,7 +299,7 @@ export default function GuidanceEditorPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="text-sm text-muted-foreground">
-                  The current Orion backend supports creating and listing guidance packs, but not deleting or mutating them in place. This screen therefore publishes new versions rather than pretending to edit old ones.
+                  The current Ikion backend supports creating and listing guidance packs, but not deleting or mutating them in place. This screen therefore publishes new versions rather than pretending to edit old ones.
                 </CardContent>
               </Card>
             </div>

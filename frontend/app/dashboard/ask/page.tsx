@@ -13,15 +13,15 @@ import { VideoPlayerCard } from "@/components/video-player-card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useActiveWorkspaceId } from "@/hooks/use-active-workspace"
 import {
-  OrionAskResponse,
-  OrionConversation,
-  OrionConversationMessage,
-  OrionInsights,
-  OrionPlayback,
+  IkionAskResponse,
+  IkionConversation,
+  IkionConversationMessage,
+  IkionInsights,
+  IkionPlayback,
   getBackendBaseUrl,
   formatUtcTimestamp,
-  orionFetch,
-} from "@/lib/orion-api"
+  ikionFetch,
+} from "@/lib/ikion-api"
 import { cn } from "@/lib/utils"
 
 import {
@@ -41,9 +41,9 @@ import {
   Video,
 } from "lucide-react"
 
-type UiMessage = OrionConversationMessage
+type UiMessage = IkionConversationMessage
 
-function buildSuggestedQuestions(insights: OrionInsights | null) {
+function buildSuggestedQuestions(insights: IkionInsights | null) {
   const prompts: string[] = []
   const seen = new Set<string>()
   const llmTopics = (insights?.llm_insights?.top_topics ?? []).map((item) => item.topic)
@@ -289,7 +289,7 @@ function formatTimestamp(seconds?: number | null) {
 }
 
 function mapPlayback(
-  playback: OrionPlayback | null,
+  playback: IkionPlayback | null,
   workspaceId: string,
   backendBase: string
 ) {
@@ -307,7 +307,7 @@ function mapPlayback(
 }
 
 function mapPlaybackSegments(
-  segments: OrionPlayback[],
+  segments: IkionPlayback[],
   workspaceId: string,
   backendBase: string
 ) {
@@ -329,11 +329,11 @@ function extractMessagePlaybackSegments(
   const raw = message.metadata?.playback_segments
   const fromMetadata = Array.isArray(raw) ? raw : []
   const segments = fromMetadata.filter(
-    (item): item is OrionPlayback =>
+    (item): item is IkionPlayback =>
       Boolean(item) &&
       typeof item === "object" &&
-      typeof (item as OrionPlayback).video_asset_id === "string" &&
-      typeof (item as OrionPlayback).timestamp_start === "number"
+      typeof (item as IkionPlayback).video_asset_id === "string" &&
+      typeof (item as IkionPlayback).timestamp_start === "number"
   )
 
   if (segments.length > 0) {
@@ -363,7 +363,7 @@ function parseLocator(locator?: string | null) {
   }
 }
 
-function countSlideRefs(citations: OrionConversationMessage["citations"]) {
+function countSlideRefs(citations: IkionConversationMessage["citations"]) {
   const seen = new Set<string>()
   let count = 0
   for (const citation of citations ?? []) {
@@ -388,14 +388,14 @@ function compactPreview(text?: string | null, maxLength = 120) {
   return `${normalized.slice(0, maxLength - 1)}…`
 }
 
-export default function AskOrionPage() {
+export default function AskIkionPage() {
   const { workspaceId } = useActiveWorkspaceId()
   const backendBase = useMemo(() => getBackendBaseUrl(), [])
-  const [conversations, setConversations] = useState<OrionConversation[]>([])
+  const [conversations, setConversations] = useState<IkionConversation[]>([])
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null)
   const [messages, setMessages] = useState<UiMessage[]>([])
   const [input, setInput] = useState("")
-  const [insights, setInsights] = useState<OrionInsights | null>(null)
+  const [insights, setInsights] = useState<IkionInsights | null>(null)
   const [conversationFilter, setConversationFilter] = useState("")
   const [isConversationPanelOpen, setIsConversationPanelOpen] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
@@ -429,7 +429,7 @@ export default function AskOrionPage() {
 
   useEffect(() => {
     if (typeof window === "undefined") return
-    const saved = window.localStorage.getItem("orion.ask.conversations.open")
+    const saved = window.localStorage.getItem("ikion.ask.conversations.open")
     if (saved === "0") {
       setIsConversationPanelOpen(false)
       return
@@ -453,12 +453,12 @@ export default function AskOrionPage() {
     setError(null)
     setIsLoading(true)
     try {
-      const list = await orionFetch<OrionConversation[]>(`/workspaces/${workspaceId}/conversations`)
+      const list = await ikionFetch<IkionConversation[]>(`/workspaces/${workspaceId}/conversations`)
       setConversations(list)
       const nextId = preferredConversationId ?? activeConversationId ?? list[0]?.id ?? null
       setActiveConversationId(nextId)
       if (nextId) {
-        const messageList = await orionFetch<OrionConversationMessage[]>(
+        const messageList = await ikionFetch<IkionConversationMessage[]>(
           `/workspaces/${workspaceId}/conversations/${nextId}/messages`
         )
         setMessages(messageList)
@@ -484,7 +484,7 @@ export default function AskOrionPage() {
       }
 
       try {
-        const summary = await orionFetch<OrionInsights>(`/workspaces/${workspaceId}/insights`)
+        const summary = await ikionFetch<IkionInsights>(`/workspaces/${workspaceId}/insights`)
         setInsights(summary)
       } catch {
         setInsights(null)
@@ -499,11 +499,11 @@ export default function AskOrionPage() {
     setActiveConversationId(conversationId)
     if (typeof window !== "undefined" && window.innerWidth < 1024) {
       setIsConversationPanelOpen(false)
-      window.localStorage.setItem("orion.ask.conversations.open", "0")
+      window.localStorage.setItem("ikion.ask.conversations.open", "0")
     }
     setIsLoading(true)
     try {
-      const messageList = await orionFetch<OrionConversationMessage[]>(
+      const messageList = await ikionFetch<IkionConversationMessage[]>(
         `/workspaces/${workspaceId}/conversations/${conversationId}/messages`
       )
       setMessages(messageList)
@@ -519,14 +519,14 @@ export default function AskOrionPage() {
     setIsSending(true)
     setError(null)
     try {
-      const conversation = await orionFetch<OrionConversation>(`/workspaces/${workspaceId}/conversations`, {
+      const conversation = await ikionFetch<IkionConversation>(`/workspaces/${workspaceId}/conversations`, {
         method: "POST",
         body: JSON.stringify({ title: "New conversation" }),
       })
       await loadConversations(conversation.id)
       if (typeof window !== "undefined" && window.innerWidth < 1024) {
         setIsConversationPanelOpen(false)
-        window.localStorage.setItem("orion.ask.conversations.open", "0")
+        window.localStorage.setItem("ikion.ask.conversations.open", "0")
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to create conversation.")
@@ -561,7 +561,7 @@ export default function AskOrionPage() {
     setMessages((prev) => [...prev, optimisticMessage])
 
     try {
-      const response = await orionFetch<OrionAskResponse>(`/workspaces/${workspaceId}/ask`, {
+      const response = await ikionFetch<IkionAskResponse>(`/workspaces/${workspaceId}/ask`, {
         method: "POST",
         body: JSON.stringify({
           query: draft,
@@ -589,7 +589,7 @@ export default function AskOrionPage() {
     setIsConversationPanelOpen((current) => {
       const next = !current
       if (typeof window !== "undefined") {
-        window.localStorage.setItem("orion.ask.conversations.open", next ? "1" : "0")
+        window.localStorage.setItem("ikion.ask.conversations.open", next ? "1" : "0")
       }
       return next
     })
@@ -600,9 +600,9 @@ export default function AskOrionPage() {
   return (
     <div className="relative flex h-[calc(100vh-4rem)] overflow-hidden bg-background">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="orion-neon-orb orion-neon-orb-cyan -left-36 top-16" />
-        <div className="orion-neon-orb orion-neon-orb-violet right-8 top-20" />
-        <div className="orion-neon-orb orion-neon-orb-indigo bottom-10 right-1/3" />
+        <div className="ikion-neon-orb ikion-neon-orb-cyan -left-36 top-16" />
+        <div className="ikion-neon-orb ikion-neon-orb-violet right-8 top-20" />
+        <div className="ikion-neon-orb ikion-neon-orb-indigo bottom-10 right-1/3" />
       </div>
 
       <aside
@@ -702,11 +702,11 @@ export default function AskOrionPage() {
               )}
               {isConversationPanelOpen ? "Hide chats" : "Show chats"}
             </Button>
-            <div className="orion-neon-chip flex h-10 w-10 items-center justify-center rounded-lg bg-accent/20">
+            <div className="ikion-neon-chip flex h-10 w-10 items-center justify-center rounded-lg bg-accent/20">
               <Sparkles className="h-5 w-5 text-accent" />
             </div>
             <div className="min-w-0 flex-1">
-              <h1 className="text-lg font-semibold">Ask Orion</h1>
+              <h1 className="text-lg font-semibold">Ask Ikion</h1>
               <p className="truncate text-sm text-muted-foreground">
                 {activeConversation ? activeConversation.title : "Grounded answers from your course materials"}
               </p>
@@ -746,7 +746,7 @@ export default function AskOrionPage() {
                 </div>
                 <h2 className="text-xl font-semibold mb-2">Ask anything about your course</h2>
                 <p className="text-muted-foreground mb-8">
-                  Orion will answer using your lecture slides, readings, and recordings with citations.
+                  Ikion will answer using your lecture slides, readings, and recordings with citations.
                 </p>
                 <div className="mx-auto mt-6 grid max-w-6xl gap-3 md:grid-cols-2 xl:grid-cols-4">
                   {suggestedQuestions.map((question) => (
@@ -773,19 +773,19 @@ export default function AskOrionPage() {
                     <div key={message.id} className="space-y-4">
                       {message.role === "user" ? (
                         <div className="flex justify-end">
-                          <div className="orion-user-bubble max-w-2xl rounded-2xl rounded-tr-sm bg-primary px-5 py-3 text-primary-foreground">
+                          <div className="ikion-user-bubble max-w-2xl rounded-2xl rounded-tr-sm bg-primary px-5 py-3 text-primary-foreground">
                             <p className="whitespace-pre-wrap">{message.content}</p>
                           </div>
                         </div>
                       ) : (
                         <div className="space-y-4">
-                          <div className="orion-neon-card rounded-xl border border-border bg-card/95">
+                          <div className="ikion-neon-card rounded-xl border border-border bg-card/95">
                             <div className="flex items-center gap-3 border-b border-border px-5 py-4">
                               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent/20">
                                 <Sparkles className="h-4 w-4 text-accent" />
                               </div>
                               <div className="flex flex-wrap items-center gap-2">
-                                <span className="text-sm font-semibold">Orion</span>
+                                <span className="text-sm font-semibold">Ikion</span>
                                 <span className="text-xs text-muted-foreground">Grounded Answer</span>
                               </div>
                             </div>
@@ -860,7 +860,7 @@ export default function AskOrionPage() {
                             <PlaybackMomentsPanel
                               segments={playbackSegments}
                               title="Relevant lecture moments"
-                              description="Orion found the three strongest transcript-matched moments for this answer."
+                              description="Ikion found the three strongest transcript-matched moments for this answer."
                             />
                           ) : playback ? (
                             <div className="space-y-2">
@@ -887,14 +887,14 @@ export default function AskOrionPage() {
                 })}
 
                 {isSending && (
-                  <div className="orion-neon-card rounded-xl border border-border bg-card/95 p-6">
+                  <div className="ikion-neon-card rounded-xl border border-border bg-card/95 p-6">
                     <div className="flex items-center gap-3">
                       <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent/20">
                         <Sparkles className="h-4 w-4 text-accent animate-pulse" />
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-medium">Orion is thinking</span>
+                          <span className="text-sm font-medium">Ikion is thinking</span>
                           <span className="flex gap-1">
                             <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-accent [animation-delay:-0.3s]" />
                             <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-accent [animation-delay:-0.15s]" />
@@ -935,14 +935,14 @@ export default function AskOrionPage() {
               <Button
                 type="submit"
                 size="icon"
-                className="orion-neon-chip h-10 w-10"
+                className="ikion-neon-chip h-10 w-10"
                 disabled={!hasWorkspace || !input.trim() || isSending}
               >
                 <Send className="h-4 w-4" />
               </Button>
             </div>
             <p className="text-center text-xs text-muted-foreground">
-              Orion answers using only your course materials with full citations
+              Ikion answers using only your course materials with full citations
             </p>
           </form>
         </div>

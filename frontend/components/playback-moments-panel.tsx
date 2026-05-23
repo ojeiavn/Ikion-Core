@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react"
 import { VideoPlayerCard } from "@/components/video-player-card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { OrionPlayback } from "@/lib/orion-api"
+import { IkionPlayback } from "@/lib/ikion-api"
 import { cn } from "@/lib/utils"
 import { Clock, Play } from "lucide-react"
 
@@ -18,7 +18,7 @@ function formatTimestamp(seconds?: number | null) {
 }
 
 interface PlaybackMomentsPanelProps {
-  segments: OrionPlayback[]
+  segments: IkionPlayback[]
   title?: string
   description?: string
   className?: string

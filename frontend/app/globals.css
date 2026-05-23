@@ -159,7 +159,7 @@ html {
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-@keyframes orion-float {
+@keyframes ikion-float {
   0% {
     transform: translate3d(0, 0, 0) scale(1);
   }
@@ -171,7 +171,7 @@ html {
   }
 }
 
-@keyframes orion-neon-pulse {
+@keyframes ikion-neon-pulse {
   0% {
     box-shadow: 0 0 0 rgba(109, 78, 255, 0.15);
   }
@@ -183,7 +183,7 @@ html {
   }
 }
 
-@keyframes orion-logo-breathe {
+@keyframes ikion-logo-breathe {
   0% {
     opacity: 0.55;
     transform: scale(0.92);
@@ -198,7 +198,7 @@ html {
   }
 }
 
-@keyframes orion-neon-drift {
+@keyframes ikion-neon-drift {
   0% {
     transform: translate3d(-6%, -3%, 0) scale(1);
     opacity: 0.46;
@@ -213,7 +213,7 @@ html {
   }
 }
 
-@keyframes orion-neon-sweep {
+@keyframes ikion-neon-sweep {
   0% {
     background-position: 0% 50%;
   }
@@ -225,7 +225,7 @@ html {
   }
 }
 
-@keyframes orion-border-trace {
+@keyframes ikion-border-trace {
   0% {
     background-position: 0% 50%;
   }
@@ -237,7 +237,7 @@ html {
   }
 }
 
-@keyframes orion-logo-orbit {
+@keyframes ikion-logo-orbit {
   0% {
     transform: rotate(0deg) scale(0.94);
   }
@@ -246,7 +246,7 @@ html {
   }
 }
 
-@keyframes orion-logo-spark {
+@keyframes ikion-logo-spark {
   0%,
   100% {
     opacity: 0;
@@ -262,31 +262,31 @@ html {
   }
 }
 
-.orion-neon-orb {
+.ikion-neon-orb {
   position: absolute;
   height: 18rem;
   width: 18rem;
   border-radius: 9999px;
   filter: blur(52px);
   opacity: 0.22;
-  animation: orion-float 9s ease-in-out infinite;
+  animation: ikion-float 9s ease-in-out infinite;
 }
 
-.orion-neon-orb-cyan {
+.ikion-neon-orb-cyan {
   background: radial-gradient(circle, rgba(26, 171, 255, 0.75) 0%, rgba(26, 171, 255, 0) 70%);
 }
 
-.orion-neon-orb-violet {
+.ikion-neon-orb-violet {
   background: radial-gradient(circle, rgba(118, 79, 255, 0.78) 0%, rgba(118, 79, 255, 0) 70%);
   animation-delay: -2.7s;
 }
 
-.orion-neon-orb-indigo {
+.ikion-neon-orb-indigo {
   background: radial-gradient(circle, rgba(86, 117, 255, 0.7) 0%, rgba(86, 117, 255, 0) 70%);
   animation-delay: -5s;
 }
 
-.orion-hero-panel {
+.ikion-hero-panel {
   position: relative;
   overflow: hidden;
   background:
@@ -296,14 +296,14 @@ html {
   backdrop-filter: blur(16px);
 }
 
-.dark .orion-hero-panel {
+.dark .ikion-hero-panel {
   background:
     linear-gradient(135deg, rgba(28, 23, 54, 0.92), rgba(17, 20, 38, 0.97)),
     radial-gradient(circle at top right, rgba(98, 77, 214, 0.16), transparent 34%);
   border-color: color-mix(in oklch, var(--accent) 24%, var(--border));
 }
 
-.orion-surface-card {
+.ikion-surface-card {
   position: relative;
   overflow: hidden;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(244, 239, 255, 0.94));
@@ -317,7 +317,7 @@ html {
     border-color 240ms ease;
 }
 
-.dark .orion-surface-card {
+.dark .ikion-surface-card {
   background:
     linear-gradient(180deg, rgba(33, 27, 60, 0.92), rgba(18, 20, 39, 0.98)),
     radial-gradient(circle at top right, rgba(98, 77, 214, 0.1), transparent 30%);
@@ -326,7 +326,7 @@ html {
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
-.orion-surface-card:hover {
+.ikion-surface-card:hover {
   transform: translateY(-2px);
   border-color: color-mix(in oklch, var(--accent) 28%, var(--border));
   box-shadow:
@@ -335,7 +335,7 @@ html {
     inset 0 1px 0 rgba(255, 255, 255, 0.78);
 }
 
-.orion-recommendation-card {
+.ikion-recommendation-card {
   position: relative;
   overflow: hidden;
   background:
@@ -346,7 +346,7 @@ html {
     inset 0 1px 0 rgba(255, 255, 255, 0.84);
 }
 
-.dark .orion-recommendation-card {
+.dark .ikion-recommendation-card {
   background:
     linear-gradient(180deg, rgba(38, 30, 67, 0.94), rgba(20, 24, 42, 0.98)),
     radial-gradient(circle at top right, rgba(110, 88, 226, 0.14), transparent 28%);
@@ -355,54 +355,54 @@ html {
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
-.orion-question-panel {
+.ikion-question-panel {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(249, 246, 255, 0.96)),
     radial-gradient(circle at top left, rgba(122, 98, 255, 0.08), transparent 28%);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.82);
 }
 
-.dark .orion-question-panel {
+.dark .ikion-question-panel {
   background:
     linear-gradient(180deg, rgba(33, 31, 57, 0.94), rgba(24, 27, 48, 0.98)),
     radial-gradient(circle at top left, rgba(122, 98, 255, 0.14), transparent 28%);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
-.orion-logo-mark {
+.ikion-logo-mark {
   isolation: isolate;
 }
 
-.orion-logo-image {
+.ikion-logo-image {
   position: relative;
   z-index: 1;
 }
 
-.orion-neon-chip {
+.ikion-neon-chip {
   box-shadow: 0 0 14px rgba(109, 78, 255, 0.26), 0 0 24px rgba(41, 164, 255, 0.12);
   transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
-.orion-neon-chip:hover {
+.ikion-neon-chip:hover {
   box-shadow: 0 0 16px rgba(109, 78, 255, 0.34), 0 0 30px rgba(41, 164, 255, 0.16);
   transform: translateY(-1px);
 }
 
-.orion-neon-card {
+.ikion-neon-card {
   position: relative;
   overflow: hidden;
   box-shadow: 0 0 0 rgba(109, 78, 255, 0.15);
   transition: box-shadow 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
 }
 
-.orion-neon-card:hover {
+.ikion-neon-card:hover {
   border-color: color-mix(in oklch, var(--accent) 34%, var(--border));
   box-shadow:
     0 0 22px rgba(109, 78, 255, 0.1),
     0 16px 30px rgba(82, 62, 170, 0.08);
 }
 
-.orion-hover-item {
+.ikion-hover-item {
   position: relative;
   overflow: hidden;
   background:
@@ -418,7 +418,7 @@ html {
     background-color 220ms ease;
 }
 
-.dark .orion-hover-item {
+.dark .ikion-hover-item {
   background:
     linear-gradient(180deg, rgba(34, 28, 61, 0.9), rgba(21, 24, 43, 0.97)),
     radial-gradient(circle at top left, rgba(112, 88, 224, 0.1), transparent 28%);
@@ -427,7 +427,7 @@ html {
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
-.orion-hover-item::before {
+.ikion-hover-item::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -440,7 +440,7 @@ html {
   transition: opacity 220ms ease;
 }
 
-.orion-hover-item:hover {
+.ikion-hover-item:hover {
   transform: translateY(-2px);
   border-color: color-mix(in oklch, var(--accent) 26%, var(--border));
   box-shadow:
@@ -448,11 +448,11 @@ html {
     0 16px 28px rgba(82, 62, 170, 0.08);
 }
 
-.orion-hover-item:hover::before {
+.ikion-hover-item:hover::before {
   opacity: 1;
 }
 
-.orion-section-frame {
+.ikion-section-frame {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(246, 241, 255, 0.94)),
     radial-gradient(circle at top left, rgba(145, 117, 255, 0.08), transparent 30%);
@@ -461,7 +461,7 @@ html {
     0 14px 28px rgba(82, 62, 170, 0.05);
 }
 
-.dark .orion-section-frame {
+.dark .ikion-section-frame {
   background:
     linear-gradient(180deg, rgba(34, 28, 61, 0.9), rgba(20, 23, 41, 0.96)),
     radial-gradient(circle at top left, rgba(112, 88, 224, 0.12), transparent 30%);
@@ -470,20 +470,20 @@ html {
     0 18px 34px rgba(4, 8, 22, 0.34);
 }
 
-.orion-user-bubble {
-  animation: orion-neon-pulse 5.4s ease-in-out infinite;
+.ikion-user-bubble {
+  animation: ikion-neon-pulse 5.4s ease-in-out infinite;
 }
 
-.orion-wrap {
+.ikion-wrap {
   overflow-wrap: anywhere;
   word-break: break-word;
 }
 
-.orion-logo-mark > img {
+.ikion-logo-mark > img {
   position: relative;
   z-index: 1;
 }
 
-.orion-logo-text {
+.ikion-logo-text {
   text-shadow: none;
 }

@@ -2,34 +2,34 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react"
 
-import { OrionAuthSession, OrionSetupStatus, OrionUser, OrionUserRole, orionFetch } from "@/lib/orion-api"
+import { IkionAuthSession, IkionSetupStatus, IkionUser, IkionUserRole, ikionFetch } from "@/lib/ikion-api"
 
 interface AuthContextValue {
-  user: OrionUser | null
+  user: IkionUser | null
   sessionId: string | null
   isLoading: boolean
   refreshSession: () => Promise<void>
-  login: (email: string, password: string) => Promise<OrionUser>
-  bootstrap: (fullName: string, email: string, password: string) => Promise<OrionUser>
+  login: (email: string, password: string) => Promise<IkionUser>
+  bootstrap: (fullName: string, email: string, password: string) => Promise<IkionUser>
   logout: () => Promise<void>
-  getSetupStatus: () => Promise<OrionSetupStatus>
+  getSetupStatus: () => Promise<IkionSetupStatus>
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<OrionUser | null>(null)
+  const [user, setUser] = useState<IkionUser | null>(null)
   const [sessionId, setSessionId] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  const applyAuthSession = (authSession: OrionAuthSession) => {
+  const applyAuthSession = (authSession: IkionAuthSession) => {
     setUser(authSession.user)
     setSessionId(authSession.session.id)
   }
 
   const refreshSession = async () => {
     try {
-      const authSession = await orionFetch<OrionAuthSession>("/auth/me")
+      const authSession = await ikionFetch<IkionAuthSession>("/auth/me")
       applyAuthSession(authSession)
     } catch {
       setUser(null)
@@ -44,34 +44,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const login = async (email: string, password: string) => {
-    await orionFetch<OrionAuthSession>("/auth/login", {
+    await ikionFetch<IkionAuthSession>("/auth/login", {
       method: "POST",
       body: JSON.stringify({ email, password }),
     })
-    const verifiedSession = await orionFetch<OrionAuthSession>("/auth/me")
+    const verifiedSession = await ikionFetch<IkionAuthSession>("/auth/me")
     applyAuthSession(verifiedSession)
     return verifiedSession.user
   }
 
   const bootstrap = async (fullName: string, email: string, password: string) => {
-    await orionFetch<OrionAuthSession>("/auth/bootstrap", {
+    await ikionFetch<IkionAuthSession>("/auth/bootstrap", {
       method: "POST",
       body: JSON.stringify({ full_name: fullName, email, password }),
     })
-    const verifiedSession = await orionFetch<OrionAuthSession>("/auth/me")
+    const verifiedSession = await ikionFetch<IkionAuthSession>("/auth/me")
     applyAuthSession(verifiedSession)
     return verifiedSession.user
   }
 
   const logout = async () => {
-    await orionFetch("/auth/logout", {
+    await ikionFetch("/auth/logout", {
       method: "POST",
     })
     setUser(null)
     setSessionId(null)
   }
 
-  const getSetupStatus = async () => orionFetch<OrionSetupStatus>("/auth/setup-status")
+  const getSetupStatus = async () => ikionFetch<IkionSetupStatus>("/auth/setup-status")
 
   const value = useMemo<AuthContextValue>(
     () => ({
@@ -98,7 +98,7 @@ export function useAuth() {
   return context
 }
 
-export function roleHomePath(role: OrionUserRole) {
+export function roleHomePath(role: IkionUserRole) {
   if (role === "admin") return "/admin"
   if (role === "lecturer") return "/lecturer"
   return "/dashboard"

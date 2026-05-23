@@ -7,7 +7,7 @@ import { ThemeProvider } from '@/components/theme-provider'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Orion — AI Study Assistant',
+  title: 'Ikion — AI Study Assistant',
   description: 'Course-grounded AI study and exam preparation assistant for universities. Ask questions, get answers with citations and lecture timestamps.',
   generator: 'v0.app',
   icons: {
@@ -21,11 +21,11 @@ export const metadata: Metadata = {
         media: '(prefers-color-scheme: dark)',
       },
       {
-        url: '/Orion-logo.png',
+        url: '/Ikion-logo.png',
         type: 'image/svg+xml',
       },
     ],
-    apple: '/Orion Logo.png',
+    apple: '/Ikion Logo.png',
   },
 }
 

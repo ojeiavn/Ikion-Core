@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { useActiveWorkspaceId } from "@/hooks/use-active-workspace"
-import { OrionAsset, OrionWorkspaceSummary, fileToBase64, orionFetch } from "@/lib/orion-api"
+import { IkionAsset, IkionWorkspaceSummary, fileToBase64, ikionFetch } from "@/lib/ikion-api"
 import { setActiveWorkspaceId } from "@/lib/workspace-store"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "sonner"
@@ -43,11 +43,11 @@ function parseTranscriptSegments(raw: string) {
 
 export default function LecturerCoursesPage() {
   const { workspaceId, refreshWorkspaceId } = useActiveWorkspaceId()
-  const [courses, setCourses] = useState<OrionWorkspaceSummary[]>([])
+  const [courses, setCourses] = useState<IkionWorkspaceSummary[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [assets, setAssets] = useState<OrionAsset[]>([])
+  const [assets, setAssets] = useState<IkionAsset[]>([])
   const [fileAsset, setFileAsset] = useState<File | null>(null)
   const [fileAssetTitle, setFileAssetTitle] = useState("")
   const [pdfCategory, setPdfCategory] = useState("lecture_material")
@@ -68,7 +68,7 @@ export default function LecturerCoursesPage() {
       setError(null)
       setIsLoading(true)
       try {
-        const workspaceList = await orionFetch<OrionWorkspaceSummary[]>("/me/workspaces")
+        const workspaceList = await ikionFetch<IkionWorkspaceSummary[]>("/me/workspaces")
         setCourses(workspaceList)
         if (!workspaceId && workspaceList.length > 0) {
           setActiveWorkspaceId(workspaceList[0].id)
@@ -91,7 +91,7 @@ export default function LecturerCoursesPage() {
         return
       }
       try {
-        const assetList = await orionFetch<OrionAsset[]>(`/workspaces/${workspaceId}/assets`)
+        const assetList = await ikionFetch<IkionAsset[]>(`/workspaces/${workspaceId}/assets`)
         setAssets(assetList)
       } catch {
         setAssets([])
@@ -127,7 +127,7 @@ export default function LecturerCoursesPage() {
     setError(null)
     try {
       const contentBase64 = await fileToBase64(fileAsset)
-      await orionFetch(`/workspaces/${workspaceId}/assets/file`, {
+      await ikionFetch(`/workspaces/${workspaceId}/assets/file`, {
         method: "POST",
         body: JSON.stringify({
           asset_type: "pdf",
@@ -166,7 +166,7 @@ export default function LecturerCoursesPage() {
     try {
       if (videoFile) {
         const contentBase64 = await fileToBase64(videoFile)
-        await orionFetch(`/workspaces/${workspaceId}/assets/video`, {
+        await ikionFetch(`/workspaces/${workspaceId}/assets/video`, {
           method: "POST",
           body: JSON.stringify({
             title: videoTitle || videoFile.name,
@@ -177,7 +177,7 @@ export default function LecturerCoursesPage() {
           }),
         })
       } else {
-        await orionFetch(`/workspaces/${workspaceId}/assets/video`, {
+        await ikionFetch(`/workspaces/${workspaceId}/assets/video`, {
           method: "POST",
           body: JSON.stringify({
             title: videoTitle,
@@ -205,7 +205,7 @@ export default function LecturerCoursesPage() {
     setIsSubmitting(true)
     setError(null)
     try {
-      await orionFetch(`/workspaces/${workspaceId}/assets/transcript`, {
+      await ikionFetch(`/workspaces/${workspaceId}/assets/transcript`, {
         method: "POST",
         body: JSON.stringify({
           title: transcriptTitle,
@@ -330,7 +330,7 @@ export default function LecturerCoursesPage() {
           <Card>
             <CardHeader>
               <CardTitle className="text-base">Register Video</CardTitle>
-              <CardDescription>Upload a lecture recording and Orion will automatically generate a linked timed transcript. External-only streams can still be registered, but auto-transcription needs uploaded media.</CardDescription>
+              <CardDescription>Upload a lecture recording and Ikion will automatically generate a linked timed transcript. External-only streams can still be registered, but auto-transcription needs uploaded media.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
               <Input value={videoTitle} onChange={(event) => setVideoTitle(event.target.value)} placeholder="Video title" />
@@ -371,7 +371,7 @@ export default function LecturerCoursesPage() {
                 placeholder="00:00:12|00:00:24|Transcript text..."
               />
               <p className="text-xs text-muted-foreground">
-                Use one line per segment: `start|end|text`. This transcript is tied to the selected lecture video, and Orion uses the timestamps for transcript query search in Ask Orion and Lecture Explorer.
+                Use one line per segment: `start|end|text`. This transcript is tied to the selected lecture video, and Ikion uses the timestamps for transcript query search in Ask Ikion and Lecture Explorer.
               </p>
               {videoAssets.length === 0 && (
                 <p className="text-xs text-amber-200">

@@ -15,7 +15,7 @@ export function useActiveWorkspaceId() {
     refreshWorkspaceId()
 
     const handleStorage = (event: StorageEvent) => {
-      if (event.key === "orion.activeWorkspaceId") {
+      if (event.key === "ikion.activeWorkspaceId") {
         refreshWorkspaceId()
       }
     }

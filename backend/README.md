@@ -1,10 +1,10 @@
-# Orion Core Backend
+# Ikion Core Backend
 
-This backend is now structured as an Orion Core MVP rather than the original NovaCS research prototype.
+This backend is now structured as an Ikion Core MVP rather than the original NovaCS research prototype.
 
 ## Runtime Architecture
 
-The active backend lives under `backend/orion/backend/` and is organized around:
+The active backend lives under `backend/ikion/backend/` and is organized around:
 
 - `config.py`: centralized config and environment loading
 - `db.py`: SQLite schema and access helpers
@@ -30,7 +30,7 @@ backend/data/
 
 ## Product Model
 
-The backend is now built around generic Orion Core concepts:
+The backend is now built around generic Ikion Core concepts:
 
 - Workspace
 - Corpus Version
@@ -48,15 +48,15 @@ Run from the `backend/` directory:
 
 ```bash
 cd backend
-venv/bin/python -m orion.backend.scripts.smoke_test
-venv/bin/python -m orion.backend.scripts.rebuild_corpus <workspace_id>
+venv/bin/python -m ikion.backend.scripts.smoke_test
+venv/bin/python -m ikion.backend.scripts.rebuild_corpus <workspace_id>
 ```
 
 If you want to serve the API:
 
 ```bash
 cd backend
-venv/bin/uvicorn orion.backend.app:app --reload
+venv/bin/uvicorn ikion.backend.app:app --reload
 ```
 
 ## Legacy Code
@@ -70,4 +70,4 @@ The old prototype scripts still exist as reference material:
 - `migrate.py`
 - `aqir_report.py`
 
-They are no longer part of the Orion Core runtime path.
+They are no longer part of the Ikion Core runtime path.

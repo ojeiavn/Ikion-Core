@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { OrionCitation, getBackendBaseUrl } from "@/lib/orion-api"
+import { IkionCitation, getBackendBaseUrl } from "@/lib/ikion-api"
 import { cn } from "@/lib/utils"
 import { ChevronLeft, ChevronRight, FileText, ExternalLink } from "lucide-react"
 
@@ -37,7 +37,7 @@ export function SlideDeck({
   className,
 }: {
   workspaceId: string
-  citations: OrionCitation[]
+  citations: IkionCitation[]
   showHeader?: boolean
   className?: string
 }) {
