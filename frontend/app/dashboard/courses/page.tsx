@@ -6,12 +6,12 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useActiveWorkspaceId } from "@/hooks/use-active-workspace"
-import { OrionWorkspaceSummary, orionFetch } from "@/lib/orion-api"
+import { IkionWorkspaceSummary, ikionFetch } from "@/lib/ikion-api"
 import { setActiveWorkspaceId } from "@/lib/workspace-store"
 
 export default function StudentCoursesPage() {
   const { workspaceId, refreshWorkspaceId } = useActiveWorkspaceId()
-  const [courses, setCourses] = useState<OrionWorkspaceSummary[]>([])
+  const [courses, setCourses] = useState<IkionWorkspaceSummary[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -20,7 +20,7 @@ export default function StudentCoursesPage() {
       setError(null)
       setIsLoading(true)
       try {
-        const workspaceList = await orionFetch<OrionWorkspaceSummary[]>("/me/workspaces")
+        const workspaceList = await ikionFetch<IkionWorkspaceSummary[]>("/me/workspaces")
         setCourses(workspaceList)
       } catch (err) {
         setError(err instanceof Error ? err.message : "Unable to load courses.")
@@ -46,7 +46,7 @@ export default function StudentCoursesPage() {
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Your Courses</h1>
         <p className="mt-1 text-muted-foreground">
-          Select the course you want to study. Orion will use the active course for answers and playback.
+          Select the course you want to study. Ikion will use the active course for answers and playback.
         </p>
         {error && <p className="mt-2 text-sm text-destructive">{error}</p>}
       </div>
@@ -92,11 +92,11 @@ export default function StudentCoursesPage() {
         <Card>
           <CardHeader>
             <CardTitle className="text-base">Next Step</CardTitle>
-            <CardDescription>Jump into Orion using the active course.</CardDescription>
+            <CardDescription>Jump into Ikion using the active course.</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-wrap gap-3">
             <Link href="/dashboard/ask">
-              <Button>Ask Orion</Button>
+              <Button>Ask Ikion</Button>
             </Link>
             <Link href="/dashboard/lectures">
               <Button variant="outline">Browse Lectures</Button>

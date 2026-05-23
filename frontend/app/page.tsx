@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useTheme } from "next-themes"
-import { OrionLogo } from "@/components/orion-logo"
+import { IkionLogo } from "@/components/ikion-logo"
 import { Button } from "@/components/ui/button"
 import { 
   ArrowRight, 
@@ -67,7 +67,7 @@ export default function LandingPage() {
       {/* Navigation */}
       <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <OrionLogo size="md" />
+          <IkionLogo size="md" />
           
           {/* Desktop Nav */}
           <nav className="hidden items-center gap-8 md:flex">
@@ -133,9 +133,9 @@ export default function LandingPage() {
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="pointer-events-none absolute inset-0 -z-10">
-          <div className="orion-neon-orb orion-neon-orb-cyan left-[-6rem] top-[4rem]" />
-          <div className="orion-neon-orb orion-neon-orb-violet right-[-8rem] top-[7rem]" />
-          <div className="orion-neon-orb orion-neon-orb-indigo bottom-[-8rem] left-[42%]" />
+          <div className="ikion-neon-orb ikion-neon-orb-cyan left-[-6rem] top-[4rem]" />
+          <div className="ikion-neon-orb ikion-neon-orb-violet right-[-8rem] top-[7rem]" />
+          <div className="ikion-neon-orb ikion-neon-orb-indigo bottom-[-8rem] left-[42%]" />
         </div>
         <div className="absolute inset-0 -z-10">
           <div className="absolute left-1/2 top-0 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/5 blur-3xl" />
@@ -155,7 +155,7 @@ export default function LandingPage() {
             </h1>
             
             <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground text-pretty">
-              Orion answers student questions using lecture slides, readings, and recordings — with citations and exact video timestamps.
+              Ikion answers student questions using lecture slides, readings, and recordings — with citations and exact video timestamps.
             </p>
             
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
@@ -186,7 +186,7 @@ export default function LandingPage() {
                     <div className="h-3 w-3 rounded-full bg-chart-2/60" />
                   </div>
                   <div className="mx-auto rounded-md bg-muted px-4 py-1 text-xs text-muted-foreground">
-                    app.orion.edu/ask
+                    app.ikion.edu/ask
                   </div>
                 </div>
                 
@@ -208,7 +208,7 @@ export default function LandingPage() {
                           <div className="flex h-6 w-6 items-center justify-center rounded-md bg-accent/20">
                             <span className="text-xs font-semibold text-accent">O</span>
                           </div>
-                          <span className="text-sm font-medium">Orion</span>
+                          <span className="text-sm font-medium">Ikion</span>
                         </div>
                         <div className="space-y-3 text-sm text-muted-foreground">
                           <p>The Critical Path Method (CPM) is a project scheduling technique that identifies the longest sequence of dependent tasks...</p>
@@ -300,7 +300,7 @@ export default function LandingPage() {
           <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
             <div>
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-                Why universities choose Orion
+                Why universities choose Ikion
               </h2>
               <p className="mt-4 text-lg text-muted-foreground">
                 Deploy AI that enhances learning outcomes while maintaining academic standards.
@@ -329,7 +329,7 @@ export default function LandingPage() {
             <div className="rounded-xl border border-border bg-card p-8">
               <Quote className="h-10 w-10 text-accent/30" />
               <blockquote className="mt-4 text-lg leading-relaxed">
-                Orion has transformed how our students engage with course materials. The citation system means they can trust the answers and deepen their understanding.
+                Ikion has transformed how our students engage with course materials. The citation system means they can trust the answers and deepen their understanding.
               </blockquote>
               <div className="mt-6 flex items-center gap-4">
                 <div className="h-12 w-12 rounded-full bg-accent/20" />
@@ -354,7 +354,7 @@ export default function LandingPage() {
               Ready to transform learning?
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-lg text-primary-foreground/80">
-              See how Orion can support your students and provide insights for your teaching team.
+              See how Ikion can support your students and provide insights for your teaching team.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link href="/dashboard">
@@ -377,7 +377,7 @@ export default function LandingPage() {
       <footer className="border-t border-border py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
-            <OrionLogo size="sm" />
+            <IkionLogo size="sm" />
             <nav className="flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground">
               <Link href="#" className="hover:text-foreground transition-colors">About</Link>
               <Link href="#" className="hover:text-foreground transition-colors">Security</Link>
@@ -386,7 +386,7 @@ export default function LandingPage() {
               <Link href="#" className="hover:text-foreground transition-colors">Privacy</Link>
             </nav>
             <p className="text-sm text-muted-foreground">
-              2026 Orion Education
+              2026 Ikion Education
             </p>
           </div>
         </div>

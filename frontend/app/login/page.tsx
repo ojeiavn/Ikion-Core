@@ -4,26 +4,26 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 
-import { OrionLogo } from "@/components/orion-logo"
+import { IkionLogo } from "@/components/ikion-logo"
 import { roleHomePath, useAuth } from "@/components/auth-provider"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { OrionSetupStatus, orionFetch } from "@/lib/orion-api"
+import { IkionSetupStatus, ikionFetch } from "@/lib/ikion-api"
 import { ArrowRight, LockKeyhole, ShieldCheck, UserRoundPlus } from "lucide-react"
 import { toast } from "sonner"
 
 export default function LoginPage() {
   const { user, isLoading, login, bootstrap, getSetupStatus } = useAuth()
   const router = useRouter()
-  const [setupStatus, setSetupStatus] = useState<OrionSetupStatus | null>(null)
+  const [setupStatus, setSetupStatus] = useState<IkionSetupStatus | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isResettingAuth, setIsResettingAuth] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [nextPath, setNextPath] = useState<string | null>(null)
-  const [fullName, setFullName] = useState("Orion Administrator")
-  const [email, setEmail] = useState("admin@orion.local")
+  const [fullName, setFullName] = useState("Ikion Administrator")
+  const [email, setEmail] = useState("admin@ikion.local")
   const [password, setPassword] = useState("")
 
   useEffect(() => {
@@ -75,11 +75,11 @@ export default function LoginPage() {
     setIsResettingAuth(true)
 
     try {
-      await orionFetch<{ status: string }>("/auth/dev-reset", { method: "POST" })
+      await ikionFetch<{ status: string }>("/auth/dev-reset", { method: "POST" })
       const status = await getSetupStatus()
       setSetupStatus(status)
-      setFullName("Orion Administrator")
-      setEmail("admin@orion.local")
+      setFullName("Ikion Administrator")
+      setEmail("admin@ikion.local")
       setPassword("")
       toast.success("Local auth reset. You can bootstrap a new admin account now.")
     } catch (err) {
@@ -96,22 +96,22 @@ export default function LoginPage() {
       <div className="grid w-full max-w-5xl gap-8 lg:grid-cols-[0.9fr_1.1fr]">
         <div className="rounded-3xl border border-border bg-card p-8 shadow-sm">
           <div className="mb-8">
-            <OrionLogo size="md" />
+            <IkionLogo size="md" />
           </div>
 
           <h1 className="text-3xl font-bold tracking-tight">
-            {setupStatus?.setup_required ? "Bootstrap Orion Core" : "Sign in to Orion"}
+            {setupStatus?.setup_required ? "Bootstrap Ikion Core" : "Sign in to Ikion"}
           </h1>
           <p className="mt-3 text-muted-foreground">
             {setupStatus?.setup_required
-              ? "Create the initial administrator account for this local Orion instance."
-              : "Use your Orion account to access the workspace platform."}
+              ? "Create the initial administrator account for this local Ikion instance."
+              : "Use your Ikion account to access the workspace platform."}
           </p>
 
           <div className="mt-8 space-y-4 text-sm text-muted-foreground">
             <div className="flex items-start gap-3">
               <ShieldCheck className="mt-0.5 h-4 w-4 text-accent" />
-              <p>Session-backed authentication is now enforced by the Orion backend.</p>
+              <p>Session-backed authentication is now enforced by the Ikion backend.</p>
             </div>
             <div className="flex items-start gap-3">
               <LockKeyhole className="mt-0.5 h-4 w-4 text-accent" />
@@ -129,8 +129,8 @@ export default function LoginPage() {
             <CardTitle>{setupStatus?.setup_required ? "Create Admin Account" : "Account Access"}</CardTitle>
             <CardDescription>
               {setupStatus?.setup_required
-                ? "This only appears when the Orion user table is empty."
-                : "Sign in with a locally managed Orion account."}
+                ? "This only appears when the Ikion user table is empty."
+                : "Sign in with a locally managed Ikion account."}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -142,7 +142,7 @@ export default function LoginPage() {
                     id="full-name"
                     value={fullName}
                     onChange={(event) => setFullName(event.target.value)}
-                    placeholder="Orion Administrator"
+                    placeholder="Ikion Administrator"
                   />
                 </div>
               )}
@@ -154,7 +154,7 @@ export default function LoginPage() {
                   type="email"
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
-                  placeholder="admin@orion.local"
+                  placeholder="admin@ikion.local"
                 />
               </div>
 
@@ -195,7 +195,7 @@ export default function LoginPage() {
 
             <div className="mt-6 text-sm text-muted-foreground">
               <Link href="/" className="underline underline-offset-4">
-                Back to Orion home
+                Back to Ikion home
               </Link>
             </div>
           </CardContent>

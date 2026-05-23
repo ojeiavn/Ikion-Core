@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useActiveWorkspaceId } from "@/hooks/use-active-workspace"
-import { OrionInsights, OrionQueryEvent, OrionWorkspaceSummary, formatUtcTimestamp, orionFetch } from "@/lib/orion-api"
+import { IkionInsights, IkionQueryEvent, IkionWorkspaceSummary, formatUtcTimestamp, ikionFetch } from "@/lib/ikion-api"
 import {
   AlertTriangle,
   ArrowRight,
@@ -22,9 +22,9 @@ import {
 
 export default function LecturerDashboard() {
   const { workspaceId } = useActiveWorkspaceId()
-  const [workspaces, setWorkspaces] = useState<OrionWorkspaceSummary[]>([])
-  const [queries, setQueries] = useState<OrionQueryEvent[]>([])
-  const [insights, setInsights] = useState<OrionInsights | null>(null)
+  const [workspaces, setWorkspaces] = useState<IkionWorkspaceSummary[]>([])
+  const [queries, setQueries] = useState<IkionQueryEvent[]>([])
+  const [insights, setInsights] = useState<IkionInsights | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -34,7 +34,7 @@ export default function LecturerDashboard() {
       setIsLoading(true)
 
       try {
-        const workspaceList = await orionFetch<OrionWorkspaceSummary[]>("/me/workspaces")
+        const workspaceList = await ikionFetch<IkionWorkspaceSummary[]>("/me/workspaces")
         setWorkspaces(workspaceList)
 
         if (!workspaceId) {
@@ -44,8 +44,8 @@ export default function LecturerDashboard() {
         }
 
         const [queryEvents, summary] = await Promise.all([
-          orionFetch<OrionQueryEvent[]>(`/workspaces/${workspaceId}/queries`),
-          orionFetch<OrionInsights>(`/workspaces/${workspaceId}/insights`),
+          ikionFetch<IkionQueryEvent[]>(`/workspaces/${workspaceId}/queries`),
+          ikionFetch<IkionInsights>(`/workspaces/${workspaceId}/insights`),
         ])
 
         setQueries(queryEvents)
@@ -152,7 +152,7 @@ export default function LecturerDashboard() {
       </div>
 
       {insights?.llm_insights?.lecturer_summary && (
-        <Card className="orion-neon-card border-accent/25 bg-accent/5">
+        <Card className="ikion-neon-card border-accent/25 bg-accent/5">
           <CardHeader className="pb-2">
             <CardTitle className="text-base">Teaching Focus This Week</CardTitle>
           </CardHeader>

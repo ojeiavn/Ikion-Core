@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
-import { OrionLogo } from "@/components/orion-logo"
+import { IkionLogo } from "@/components/ikion-logo"
 import {
   Home,
   BookOpen,
@@ -24,7 +24,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { OrionWorkspaceSummary, orionFetch } from "@/lib/orion-api"
+import { IkionWorkspaceSummary, ikionFetch } from "@/lib/ikion-api"
 import { setActiveWorkspaceId } from "@/lib/workspace-store"
 import { useActiveWorkspaceId } from "@/hooks/use-active-workspace"
 
@@ -37,7 +37,7 @@ interface NavItem {
 const studentNavItems: NavItem[] = [
   { label: "Home", href: "/dashboard", icon: Home },
   { label: "Courses", href: "/dashboard/courses", icon: BookOpen },
-  { label: "Ask Orion", href: "/dashboard/ask", icon: MessageSquare },
+  { label: "Ask Ikion", href: "/dashboard/ask", icon: MessageSquare },
   { label: "Lecture Explorer", href: "/dashboard/lectures", icon: Video },
   { label: "Exam Prep", href: "/dashboard/exam-prep", icon: FileText },
   { label: "Notes", href: "/dashboard/notes", icon: StickyNote },
@@ -71,13 +71,13 @@ export function AppSidebar({
 }: AppSidebarProps) {
   const pathname = usePathname()
   const { workspaceId, refreshWorkspaceId } = useActiveWorkspaceId()
-  const [courses, setCourses] = useState<OrionWorkspaceSummary[]>([])
+  const [courses, setCourses] = useState<IkionWorkspaceSummary[]>([])
 
   useEffect(() => {
     if (userRole !== "student") return
     const loadCourses = async () => {
       try {
-        const workspaceList = await orionFetch<OrionWorkspaceSummary[]>("/me/workspaces")
+        const workspaceList = await ikionFetch<IkionWorkspaceSummary[]>("/me/workspaces")
         setCourses(workspaceList)
         if (!workspaceId && workspaceList.length > 0) {
           setActiveWorkspaceId(workspaceList[0].id)
@@ -115,7 +115,7 @@ export function AppSidebar({
           collapsed ? "justify-center" : "justify-start"
         )}
       >
-        <OrionLogo size={collapsed ? "md" : "lg"} showText={!collapsed} />
+        <IkionLogo size={collapsed ? "md" : "lg"} showText={!collapsed} />
       </div>
 
       {/* Course Selector (for students) */}

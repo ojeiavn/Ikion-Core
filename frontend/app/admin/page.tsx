@@ -4,14 +4,14 @@ import { useEffect, useMemo, useState } from "react"
 import { AlertCircle, BookOpen, Database, FileText, Link2, MessageSquare, Play, RefreshCw, Sparkles } from "lucide-react"
 
 import {
-  OrionAsset,
-  OrionCorpusInspection,
-  OrionGuidancePack,
-  OrionWorkspace,
+  IkionAsset,
+  IkionCorpusInspection,
+  IkionGuidancePack,
+  IkionWorkspace,
   fileToBase64,
   formatUtcTimestamp,
-  orionFetch,
-} from "@/lib/orion-api"
+  ikionFetch,
+} from "@/lib/ikion-api"
 import { getActiveWorkspaceId, setActiveWorkspaceId } from "@/lib/workspace-store"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
@@ -52,17 +52,17 @@ function parseTranscriptSegments(raw: string) {
 }
 
 export default function AdminDashboard() {
-  const [workspaces, setWorkspaces] = useState<OrionWorkspace[]>([])
+  const [workspaces, setWorkspaces] = useState<IkionWorkspace[]>([])
   const [activeWorkspaceId, setActiveWorkspaceIdState] = useState<string | null>(null)
-  const [assets, setAssets] = useState<OrionAsset[]>([])
-  const [guidancePacks, setGuidancePacks] = useState<OrionGuidancePack[]>([])
-  const [corpusInspection, setCorpusInspection] = useState<OrionCorpusInspection | null>(null)
+  const [assets, setAssets] = useState<IkionAsset[]>([])
+  const [guidancePacks, setGuidancePacks] = useState<IkionGuidancePack[]>([])
+  const [corpusInspection, setCorpusInspection] = useState<IkionCorpusInspection | null>(null)
   const [isBootstrapping, setIsBootstrapping] = useState(true)
   const [isBusy, setIsBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
 
-  const [workspaceName, setWorkspaceName] = useState("Orion Core Workspace")
+  const [workspaceName, setWorkspaceName] = useState("Ikion Core Workspace")
   const [workspaceDescription, setWorkspaceDescription] = useState("Primary managed knowledge workspace.")
   const [guidanceName, setGuidanceName] = useState("Default Guidance")
   const [guidanceText, setGuidanceText] = useState("Answer concisely, cite evidence, and refuse unsupported claims.")
@@ -111,7 +111,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const bootstrap = async () => {
       try {
-        const workspaceList = await orionFetch<OrionWorkspace[]>("/workspaces")
+        const workspaceList = await ikionFetch<IkionWorkspace[]>("/workspaces")
         setWorkspaces(workspaceList)
 
         const storedWorkspaceId = getActiveWorkspaceId()
@@ -145,15 +145,15 @@ export default function AdminDashboard() {
     const hydrateWorkspace = async () => {
       try {
         const [assetList, guidanceList] = await Promise.all([
-          orionFetch<OrionAsset[]>(`/workspaces/${activeWorkspaceId}/assets`),
-          orionFetch<OrionGuidancePack[]>(`/workspaces/${activeWorkspaceId}/guidance`),
+          ikionFetch<IkionAsset[]>(`/workspaces/${activeWorkspaceId}/assets`),
+          ikionFetch<IkionGuidancePack[]>(`/workspaces/${activeWorkspaceId}/guidance`),
         ])
 
         setAssets(assetList)
         setGuidancePacks(guidanceList)
 
         try {
-          const corpus = await orionFetch<OrionCorpusInspection>(`/workspaces/${activeWorkspaceId}/corpus/active`)
+          const corpus = await ikionFetch<IkionCorpusInspection>(`/workspaces/${activeWorkspaceId}/corpus/active`)
           setCorpusInspection(corpus)
         } catch {
           setCorpusInspection(null)
@@ -167,22 +167,22 @@ export default function AdminDashboard() {
   }, [activeWorkspaceId])
 
   const refreshWorkspaces = async () => {
-    const workspaceList = await orionFetch<OrionWorkspace[]>("/workspaces")
+    const workspaceList = await ikionFetch<IkionWorkspace[]>("/workspaces")
     setWorkspaces(workspaceList)
     return workspaceList
   }
 
   const refreshWorkspaceState = async (workspaceId: string) => {
     const [assetList, guidanceList] = await Promise.all([
-      orionFetch<OrionAsset[]>(`/workspaces/${workspaceId}/assets`),
-      orionFetch<OrionGuidancePack[]>(`/workspaces/${workspaceId}/guidance`),
+      ikionFetch<IkionAsset[]>(`/workspaces/${workspaceId}/assets`),
+      ikionFetch<IkionGuidancePack[]>(`/workspaces/${workspaceId}/guidance`),
     ])
 
     setAssets(assetList)
     setGuidancePacks(guidanceList)
 
     try {
-      const corpus = await orionFetch<OrionCorpusInspection>(`/workspaces/${workspaceId}/corpus/active`)
+      const corpus = await ikionFetch<IkionCorpusInspection>(`/workspaces/${workspaceId}/corpus/active`)
       setCorpusInspection(corpus)
     } catch {
       setCorpusInspection(null)
@@ -208,7 +208,7 @@ export default function AdminDashboard() {
 
   const handleCreateWorkspace = async () => {
     await runAction(async () => {
-      const workspace = await orionFetch<OrionWorkspace>("/workspaces", {
+      const workspace = await ikionFetch<IkionWorkspace>("/workspaces", {
         method: "POST",
         body: JSON.stringify({
           name: workspaceName,
@@ -228,7 +228,7 @@ export default function AdminDashboard() {
   const handleCreateGuidance = async () => {
     if (!activeWorkspaceId) return
     await runAction(async () => {
-      await orionFetch(`/workspaces/${activeWorkspaceId}/guidance`, {
+      await ikionFetch(`/workspaces/${activeWorkspaceId}/guidance`, {
         method: "POST",
         body: JSON.stringify({
           name: guidanceName,
@@ -244,7 +244,7 @@ export default function AdminDashboard() {
   const handleCreateNotice = async () => {
     if (!activeWorkspaceId) return
     await runAction(async () => {
-      await orionFetch(`/workspaces/${activeWorkspaceId}/assets/text`, {
+      await ikionFetch(`/workspaces/${activeWorkspaceId}/assets/text`, {
         method: "POST",
         body: JSON.stringify({
           asset_type: "notice",
@@ -263,7 +263,7 @@ export default function AdminDashboard() {
     if (!activeWorkspaceId || !fileAsset) return
     await runAction(async () => {
       const contentBase64 = await fileToBase64(fileAsset)
-      await orionFetch(`/workspaces/${activeWorkspaceId}/assets/file`, {
+      await ikionFetch(`/workspaces/${activeWorkspaceId}/assets/file`, {
         method: "POST",
         body: JSON.stringify({
           asset_type: fileAssetType,
@@ -297,7 +297,7 @@ export default function AdminDashboard() {
     await runAction(async () => {
       if (videoFile) {
         const contentBase64 = await fileToBase64(videoFile)
-        await orionFetch(`/workspaces/${activeWorkspaceId}/assets/video`, {
+        await ikionFetch(`/workspaces/${activeWorkspaceId}/assets/video`, {
           method: "POST",
           body: JSON.stringify({
             title: videoTitle || videoFile.name,
@@ -308,7 +308,7 @@ export default function AdminDashboard() {
           }),
         })
       } else {
-        await orionFetch(`/workspaces/${activeWorkspaceId}/assets/video`, {
+        await ikionFetch(`/workspaces/${activeWorkspaceId}/assets/video`, {
           method: "POST",
           body: JSON.stringify({
             title: videoTitle,
@@ -327,7 +327,7 @@ export default function AdminDashboard() {
   const handleTranscriptSegmentsUpload = async () => {
     if (!activeWorkspaceId) return
     await runAction(async () => {
-      await orionFetch(`/workspaces/${activeWorkspaceId}/assets/transcript`, {
+      await ikionFetch(`/workspaces/${activeWorkspaceId}/assets/transcript`, {
         method: "POST",
         body: JSON.stringify({
           title: transcriptTitle,
@@ -343,7 +343,7 @@ export default function AdminDashboard() {
   const handleBackfillTranscripts = async () => {
     if (!activeWorkspaceId) return
     await runAction(async () => {
-      const result = await orionFetch<{ status: string; scheduled_count: number }>(
+      const result = await ikionFetch<{ status: string; scheduled_count: number }>(
         `/workspaces/${activeWorkspaceId}/transcripts/backfill`,
         {
           method: "POST",
@@ -362,7 +362,7 @@ export default function AdminDashboard() {
   const handleBuildCorpus = async () => {
     if (!activeWorkspaceId) return
     await runAction(async () => {
-      await orionFetch(`/workspaces/${activeWorkspaceId}/corpus/build`, {
+      await ikionFetch(`/workspaces/${activeWorkspaceId}/corpus/build`, {
         method: "POST",
       })
       await refreshWorkspaceState(activeWorkspaceId)
@@ -370,14 +370,14 @@ export default function AdminDashboard() {
   }
 
   if (isBootstrapping) {
-    return <div className="p-6 lg:p-8 text-sm text-muted-foreground">Loading Orion admin controls...</div>
+    return <div className="p-6 lg:p-8 text-sm text-muted-foreground">Loading Ikion admin controls...</div>
   }
 
   return (
     <div className="p-6 lg:p-8 space-y-6">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Orion Core Control Panel</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Ikion Core Control Panel</h1>
           <p className="mt-1 text-muted-foreground">
             Create workspaces, ingest managed content, activate corpora, and publish guidance.
           </p>
@@ -582,7 +582,7 @@ export default function AdminDashboard() {
         <Card>
           <CardHeader>
             <CardTitle>Register Video</CardTitle>
-            <CardDescription>Upload a lecture video and Orion will automatically generate and store a linked timed transcript for transcript search. External-only links can still be registered, but auto-transcription requires uploaded media.</CardDescription>
+            <CardDescription>Upload a lecture video and Ikion will automatically generate and store a linked timed transcript for transcript search. External-only links can still be registered, but auto-transcription requires uploaded media.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <Input value={videoTitle} onChange={(event) => setVideoTitle(event.target.value)} placeholder="Video title" />
@@ -598,7 +598,7 @@ export default function AdminDashboard() {
       <Card>
         <CardHeader>
           <CardTitle>Timestamped Transcript Segments</CardTitle>
-          <CardDescription>Optional manual override. Use one line per segment in the format `start|end|text`, and link it to the lecture video so Orion can surface exact playback moments in Ask Orion and Lecture Explorer.</CardDescription>
+          <CardDescription>Optional manual override. Use one line per segment in the format `start|end|text`, and link it to the lecture video so Ikion can surface exact playback moments in Ask Ikion and Lecture Explorer.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid gap-3 md:grid-cols-[1fr_220px]">
@@ -618,7 +618,7 @@ export default function AdminDashboard() {
           </div>
           <Textarea value={transcriptSegments} onChange={(event) => setTranscriptSegments(event.target.value)} rows={8} />
           <p className="text-xs text-muted-foreground">
-            This should be timestamped lecture transcript data such as `.vtt`, `.srt`, or structured segment exports. Every transcript must be tied to one lecture video so Orion can jump students to the top 3 most relevant moments inside that lecture.
+            This should be timestamped lecture transcript data such as `.vtt`, `.srt`, or structured segment exports. Every transcript must be tied to one lecture video so Ikion can jump students to the top 3 most relevant moments inside that lecture.
           </p>
           {videoAssets.length === 0 && (
             <p className="text-xs text-amber-200">

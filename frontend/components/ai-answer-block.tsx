@@ -20,7 +20,7 @@ export function AIAnswerBlock({ content, isLoading, className }: AIAnswerBlockPr
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-2">
-              <span className="text-sm font-medium">Orion is thinking</span>
+              <span className="text-sm font-medium">Ikion is thinking</span>
               <span className="flex gap-1">
                 <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-accent [animation-delay:-0.3s]" />
                 <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-accent [animation-delay:-0.15s]" />
@@ -46,7 +46,7 @@ export function AIAnswerBlock({ content, isLoading, className }: AIAnswerBlockPr
           <Sparkles className="h-4 w-4 text-accent" />
         </div>
         <div>
-          <span className="text-sm font-semibold">Orion</span>
+          <span className="text-sm font-semibold">Ikion</span>
           <span className="ml-2 text-xs text-muted-foreground">AI Assistant</span>
         </div>
       </div>

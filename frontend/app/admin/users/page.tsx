@@ -8,25 +8,25 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
-  OrionSessionRecord,
-  OrionUserRole,
-  OrionUserSummary,
-  OrionWorkspace,
-  OrionWorkspaceMembership,
+  IkionSessionRecord,
+  IkionUserRole,
+  IkionUserSummary,
+  IkionWorkspace,
+  IkionWorkspaceMembership,
   formatUtcTimestamp,
-  orionFetch,
-} from "@/lib/orion-api"
+  ikionFetch,
+} from "@/lib/ikion-api"
 import { RefreshCw, ShieldCheck, Trash2, UserPlus } from "lucide-react"
 import { toast } from "sonner"
 
 export default function AdminUsersPage() {
-  const [users, setUsers] = useState<OrionUserSummary[]>([])
-  const [sessions, setSessions] = useState<OrionSessionRecord[]>([])
-  const [workspaces, setWorkspaces] = useState<OrionWorkspace[]>([])
-  const [memberships, setMemberships] = useState<OrionWorkspaceMembership[]>([])
+  const [users, setUsers] = useState<IkionUserSummary[]>([])
+  const [sessions, setSessions] = useState<IkionSessionRecord[]>([])
+  const [workspaces, setWorkspaces] = useState<IkionWorkspace[]>([])
+  const [memberships, setMemberships] = useState<IkionWorkspaceMembership[]>([])
   const [selectedWorkspaceId, setSelectedWorkspaceId] = useState<string>("")
   const [selectedUserId, setSelectedUserId] = useState<string>("")
-  const [membershipRole, setMembershipRole] = useState<OrionUserRole>("student")
+  const [membershipRole, setMembershipRole] = useState<IkionUserRole>("student")
   const [isLoading, setIsLoading] = useState(true)
   const [isCreating, setIsCreating] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -42,9 +42,9 @@ export default function AdminUsersPage() {
     setIsLoading(true)
     try {
       const [userList, sessionList, workspaceList] = await Promise.all([
-        orionFetch<OrionUserSummary[]>("/users"),
-        orionFetch<OrionSessionRecord[]>("/auth/sessions?all_users=true"),
-        orionFetch<OrionWorkspace[]>("/workspaces"),
+        ikionFetch<IkionUserSummary[]>("/users"),
+        ikionFetch<IkionSessionRecord[]>("/auth/sessions?all_users=true"),
+        ikionFetch<IkionWorkspace[]>("/workspaces"),
       ])
       setUsers(userList)
       setSessions(sessionList)
@@ -70,7 +70,7 @@ export default function AdminUsersPage() {
         return
       }
       try {
-        const memberList = await orionFetch<OrionWorkspaceMembership[]>(
+        const memberList = await ikionFetch<IkionWorkspaceMembership[]>(
           `/workspaces/${selectedWorkspaceId}/members`
         )
         setMemberships(memberList)
@@ -85,7 +85,7 @@ export default function AdminUsersPage() {
     setIsCreating(true)
     setError(null)
     try {
-      await orionFetch("/users", {
+      await ikionFetch("/users", {
         method: "POST",
         body: JSON.stringify({
           full_name: formData.fullName,
@@ -108,7 +108,7 @@ export default function AdminUsersPage() {
 
   const revokeSession = async (sessionId: string) => {
     try {
-      await orionFetch(`/auth/sessions/${sessionId}`, {
+      await ikionFetch(`/auth/sessions/${sessionId}`, {
         method: "DELETE",
       })
       await load()
@@ -125,14 +125,14 @@ export default function AdminUsersPage() {
     setIsCreating(true)
     setError(null)
     try {
-      await orionFetch(`/workspaces/${selectedWorkspaceId}/members`, {
+      await ikionFetch(`/workspaces/${selectedWorkspaceId}/members`, {
         method: "POST",
         body: JSON.stringify({
           user_id: selectedUserId,
           role: membershipRole,
         }),
       })
-      const memberList = await orionFetch<OrionWorkspaceMembership[]>(
+      const memberList = await ikionFetch<IkionWorkspaceMembership[]>(
         `/workspaces/${selectedWorkspaceId}/members`
       )
       setMemberships(memberList)
@@ -150,10 +150,10 @@ export default function AdminUsersPage() {
     if (!selectedWorkspaceId) return
     setError(null)
     try {
-      await orionFetch(`/workspaces/${selectedWorkspaceId}/members/${userId}`, {
+      await ikionFetch(`/workspaces/${selectedWorkspaceId}/members/${userId}`, {
         method: "DELETE",
       })
-      const memberList = await orionFetch<OrionWorkspaceMembership[]>(
+      const memberList = await ikionFetch<IkionWorkspaceMembership[]>(
         `/workspaces/${selectedWorkspaceId}/members`
       )
       setMemberships(memberList)
@@ -171,7 +171,7 @@ export default function AdminUsersPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Users & Sessions</h1>
           <p className="mt-1 text-muted-foreground">
-            Manage local Orion accounts and inspect active session records.
+            Manage local Ikion accounts and inspect active session records.
           </p>
           {error && <p className="mt-2 text-sm text-destructive">{error}</p>}
         </div>
@@ -188,7 +188,7 @@ export default function AdminUsersPage() {
               <UserPlus className="h-4 w-4" />
               Create User
             </CardTitle>
-            <CardDescription>Add a locally managed Orion account.</CardDescription>
+            <CardDescription>Add a locally managed Ikion account.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
@@ -317,7 +317,7 @@ export default function AdminUsersPage() {
               <select
                 id="membership-role"
                 value={membershipRole}
-                onChange={(event) => setMembershipRole(event.target.value as OrionUserRole)}
+                onChange={(event) => setMembershipRole(event.target.value as IkionUserRole)}
                 className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
               >
                 <option value="student">Student</option>

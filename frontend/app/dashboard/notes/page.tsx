@@ -13,13 +13,13 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useActiveWorkspaceId } from "@/hooks/use-active-workspace"
 import {
-  OrionAsset,
-  OrionInsights,
-  OrionQueryEvent,
-  OrionTopicNotesResponse,
+  IkionAsset,
+  IkionInsights,
+  IkionQueryEvent,
+  IkionTopicNotesResponse,
   formatUtcTimestamp,
-  orionFetch,
-} from "@/lib/orion-api"
+  ikionFetch,
+} from "@/lib/ikion-api"
 import {
   Calendar,
   Copy,
@@ -54,7 +54,7 @@ const TOPIC_STOPWORDS = new Set([
   "more",
   "need",
   "notes",
-  "orion",
+  "ikion",
   "please",
   "question",
   "questions",
@@ -84,7 +84,7 @@ interface TopicCluster {
   summary: string
   brief: string
   keywords: string[]
-  notes: OrionQueryEvent[]
+  notes: IkionQueryEvent[]
   topAssets: Array<{ id: string; title: string; asset_type: string; status?: string }>
   lastUpdated: string
   playbackCount: number
@@ -121,7 +121,7 @@ function formatTopicToken(token: string) {
     .join("-")
 }
 
-function buildTopicLabel(keywords: string[], notes: OrionQueryEvent[]) {
+function buildTopicLabel(keywords: string[], notes: IkionQueryEvent[]) {
   if (keywords.length > 0) {
     return keywords.slice(0, 3).map(formatTopicToken).join(" / ")
   }
@@ -134,7 +134,7 @@ function seedKeywords(...values: Array<string | null | undefined>) {
   return extractKeywords(...values).slice(0, 12)
 }
 
-function buildTopicSeeds(insights: OrionInsights | null) {
+function buildTopicSeeds(insights: IkionInsights | null) {
   if (!insights) return []
 
   const graphTopics = insights.graph_topics ?? []
@@ -188,13 +188,13 @@ function scoreTopicSeed(keywords: string[], assetIds: string[], seed: TopicSeed)
 }
 
 function buildTopicClusters(
-  notes: OrionQueryEvent[],
-  assetsById: Map<string, OrionAsset>,
-  insights: OrionInsights | null,
+  notes: IkionQueryEvent[],
+  assetsById: Map<string, IkionAsset>,
+  insights: IkionInsights | null,
 ) {
   type MutableCluster = {
     id: string
-    notes: OrionQueryEvent[]
+    notes: IkionQueryEvent[]
     keywordCounts: Map<string, number>
     assetCounts: Map<string, number>
     playbackCount: number
@@ -271,17 +271,17 @@ function buildTopicClusters(
       const topAssets = Array.from(cluster.assetCounts.entries())
         .sort((left, right) => right[1] - left[1])
         .map(([assetId]) => assetsById.get(assetId))
-        .filter((asset): asset is OrionAsset => Boolean(asset))
+        .filter((asset): asset is IkionAsset => Boolean(asset))
         .map((asset) => ({ id: asset.id, title: asset.title, asset_type: asset.asset_type, status: asset.status }))
         .slice(0, 4)
 
       const label = cluster.seed?.label || buildTopicLabel(keywords, cluster.notes)
       const summary = cluster.seed
-        ? `Knowledge-graph cluster built from ${cluster.notes.length} grounded Orion ${cluster.notes.length === 1 ? "answer" : "answers"} around ${label.toLowerCase()}.`
-        : `Built from ${cluster.notes.length} grounded Orion ${cluster.notes.length === 1 ? "answer" : "answers"} around ${label.toLowerCase()}.`
+        ? `Knowledge-graph cluster built from ${cluster.notes.length} grounded Ikion ${cluster.notes.length === 1 ? "answer" : "answers"} around ${label.toLowerCase()}.`
+        : `Built from ${cluster.notes.length} grounded Ikion ${cluster.notes.length === 1 ? "answer" : "answers"} around ${label.toLowerCase()}.`
       const briefSections = [
         "Topic Brief",
-        `This topic groups ${cluster.notes.length} personal Orion ${cluster.notes.length === 1 ? "answer" : "answers"} that revolve around ${label.toLowerCase()}.`,
+        `This topic groups ${cluster.notes.length} personal Ikion ${cluster.notes.length === 1 ? "answer" : "answers"} that revolve around ${label.toLowerCase()}.`,
         cluster.seed?.graphLabel ? `Knowledge-graph anchor\n\n- ${cluster.seed.graphLabel}` : "",
         cluster.seed?.examples.length ? "Representative queries" : "",
         ...(cluster.seed?.examples ?? []).map((example) => `- ${example}`),
@@ -318,9 +318,9 @@ export default function NotesPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedTopicId, setSelectedTopicId] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState("all")
-  const [queries, setQueries] = useState<OrionQueryEvent[]>([])
-  const [assets, setAssets] = useState<OrionAsset[]>([])
-  const [insights, setInsights] = useState<OrionInsights | null>(null)
+  const [queries, setQueries] = useState<IkionQueryEvent[]>([])
+  const [assets, setAssets] = useState<IkionAsset[]>([])
+  const [insights, setInsights] = useState<IkionInsights | null>(null)
   const [serverTopicClusters, setServerTopicClusters] = useState<TopicCluster[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -340,10 +340,10 @@ export default function NotesPage() {
         }
 
         const [queryEvents, assetList, summary, topicNotesResult] = await Promise.all([
-          orionFetch<OrionQueryEvent[]>(`/workspaces/${workspaceId}/queries`),
-          orionFetch<OrionAsset[]>(`/workspaces/${workspaceId}/assets`),
-          orionFetch<OrionInsights>(`/workspaces/${workspaceId}/insights`),
-          orionFetch<OrionTopicNotesResponse>(`/workspaces/${workspaceId}/notes/topics`).catch(() => null),
+          ikionFetch<IkionQueryEvent[]>(`/workspaces/${workspaceId}/queries`),
+          ikionFetch<IkionAsset[]>(`/workspaces/${workspaceId}/assets`),
+          ikionFetch<IkionInsights>(`/workspaces/${workspaceId}/insights`),
+          ikionFetch<IkionTopicNotesResponse>(`/workspaces/${workspaceId}/notes/topics`).catch(() => null),
         ])
 
         setQueries(queryEvents)
@@ -453,7 +453,7 @@ export default function NotesPage() {
               <div>
                 <h1 className="text-lg font-semibold">Personal Notes</h1>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Clustered from your own Orion queries using workspace insight clusters and the knowledge graph.
+                  Clustered from your own Ikion queries using workspace insight clusters and the knowledge graph.
                 </p>
               </div>
                     <Button size="sm" className="gap-1.5" disabled>
@@ -493,14 +493,14 @@ export default function NotesPage() {
                 ) : topicClusters.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-12 text-center">
                     <StickyNote className="h-10 w-10 text-muted-foreground/50" />
-                    <p className="mt-3 text-sm text-muted-foreground">No personal Orion notes found yet.</p>
+                    <p className="mt-3 text-sm text-muted-foreground">No personal Ikion notes found yet.</p>
                   </div>
                 ) : (
                   topicClusters.map((topic) => (
                     <button
                       key={topic.id}
                       onClick={() => setSelectedTopicId(topic.id)}
-                      className={`orion-hover-item w-full rounded-xl border p-4 text-left transition-colors ${
+                      className={`ikion-hover-item w-full rounded-xl border p-4 text-left transition-colors ${
                         selectedTopic?.id === topic.id
                           ? "border-accent/35 bg-accent/5"
                           : "border-border"
@@ -562,7 +562,7 @@ export default function NotesPage() {
                     </Badge>
                   </div>
                   <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
-                    Knowledge-graph and query-cluster organized notes from your grounded Orion answers for this workspace.
+                    Knowledge-graph and query-cluster organized notes from your grounded Ikion answers for this workspace.
                   </p>
                   <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
                     <span className="inline-flex items-center gap-1.5">
@@ -589,13 +589,13 @@ export default function NotesPage() {
                   <CardTitle className="text-base">Topic Brief</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="orion-section-frame rounded-2xl border border-border/70 p-4">
+                  <div className="ikion-section-frame rounded-2xl border border-border/70 p-4">
                     <FormattedRichText text={selectedTopic.brief} />
                   </div>
                   {selectedTopic.topAssets.length > 0 && (
                     <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                       {selectedTopic.topAssets.map((asset) => (
-                        <div key={asset.id} className="orion-hover-item rounded-xl border border-border/70 p-3">
+                        <div key={asset.id} className="ikion-hover-item rounded-xl border border-border/70 p-3">
                           <p className="text-sm font-medium">{asset.title}</p>
                           <p className="mt-1 text-xs uppercase tracking-wide text-muted-foreground">
                             {asset.asset_type}
@@ -611,7 +611,7 @@ export default function NotesPage() {
                 {selectedTopic.notes.map((note) => {
                   const citedAssets = note.cited_asset_ids
                     .map((assetId) => assetsById.get(assetId))
-                    .filter((asset): asset is OrionAsset => Boolean(asset))
+                    .filter((asset): asset is IkionAsset => Boolean(asset))
 
                   return (
                     <Card key={note.id}>
@@ -648,7 +648,7 @@ export default function NotesPage() {
                         </div>
                       </CardHeader>
                       <CardContent className="space-y-5">
-                        <div className="orion-section-frame rounded-2xl border border-border/70 p-4">
+                        <div className="ikion-section-frame rounded-2xl border border-border/70 p-4">
                           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
                             Grounded Answer
                           </p>
@@ -664,7 +664,7 @@ export default function NotesPage() {
                             </p>
                             <div className="grid gap-3 md:grid-cols-2">
                               {citedAssets.map((asset) => (
-                                <div key={asset.id} className="orion-hover-item rounded-2xl border border-border/70 p-3">
+                                <div key={asset.id} className="ikion-hover-item rounded-2xl border border-border/70 p-3">
                                   {asset.asset_type === "video" ? (
                                     <VideoThumbnail
                                       asset={asset}
@@ -691,7 +691,7 @@ export default function NotesPage() {
                         )}
 
                         {note.playback && (
-                          <div className="orion-section-frame rounded-2xl border border-border/70 p-4">
+                          <div className="ikion-section-frame rounded-2xl border border-border/70 p-4">
                             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
                               Playback Reference
                             </p>

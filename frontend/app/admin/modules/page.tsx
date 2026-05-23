@@ -17,13 +17,13 @@ import {
 } from "@/components/ui/select"
 import { useActiveWorkspaceId } from "@/hooks/use-active-workspace"
 import {
-  OrionAsset,
-  OrionCorpusInspection,
-  OrionWorkspace,
+  IkionAsset,
+  IkionCorpusInspection,
+  IkionWorkspace,
   formatUtcTimestamp,
   getBackendBaseUrl,
-  orionFetch,
-} from "@/lib/orion-api"
+  ikionFetch,
+} from "@/lib/ikion-api"
 import {
   BookOpen,
   CheckCircle2,
@@ -54,9 +54,9 @@ const typeColors = {
 export default function ModulesPage() {
   const { workspaceId } = useActiveWorkspaceId()
   const backendBase = getBackendBaseUrl()
-  const [workspaces, setWorkspaces] = useState<OrionWorkspace[]>([])
-  const [assets, setAssets] = useState<OrionAsset[]>([])
-  const [corpusInspection, setCorpusInspection] = useState<OrionCorpusInspection | null>(null)
+  const [workspaces, setWorkspaces] = useState<IkionWorkspace[]>([])
+  const [assets, setAssets] = useState<IkionAsset[]>([])
+  const [corpusInspection, setCorpusInspection] = useState<IkionCorpusInspection | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedType, setSelectedType] = useState("all")
   const [isLoading, setIsLoading] = useState(true)
@@ -73,7 +73,7 @@ export default function ModulesPage() {
     setIsLoading(true)
 
     try {
-      const workspaceList = await orionFetch<OrionWorkspace[]>("/workspaces")
+      const workspaceList = await ikionFetch<IkionWorkspace[]>("/workspaces")
       setWorkspaces(workspaceList)
 
       if (!workspaceId) {
@@ -82,11 +82,11 @@ export default function ModulesPage() {
         return
       }
 
-      const assetList = await orionFetch<OrionAsset[]>(`/workspaces/${workspaceId}/assets`)
+      const assetList = await ikionFetch<IkionAsset[]>(`/workspaces/${workspaceId}/assets`)
       setAssets(assetList)
 
       try {
-        const corpus = await orionFetch<OrionCorpusInspection>(`/workspaces/${workspaceId}/corpus/active`)
+        const corpus = await ikionFetch<IkionCorpusInspection>(`/workspaces/${workspaceId}/corpus/active`)
         setCorpusInspection(corpus)
       } catch {
         setCorpusInspection(null)
@@ -124,7 +124,7 @@ export default function ModulesPage() {
     setIsBuilding(true)
     setError(null)
     try {
-      await orionFetch(`/workspaces/${workspaceId}/corpus/build`, { method: "POST" })
+      await ikionFetch(`/workspaces/${workspaceId}/corpus/build`, { method: "POST" })
       await load()
       toast.success("Corpus rebuilt and activated.")
     } catch (err) {
@@ -266,7 +266,7 @@ export default function ModulesPage() {
                         </div>
 
                         <div className="min-w-0 flex-1">
-                          <p className="orion-wrap line-clamp-2 font-medium">{material.title}</p>
+                          <p className="ikion-wrap line-clamp-2 font-medium">{material.title}</p>
                           <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
                             <span className="capitalize">{material.asset_type}</span>
                             <span className="text-border">|</span>
@@ -276,7 +276,7 @@ export default function ModulesPage() {
                             {(material.external_ref || material.content_path) && (
                               <>
                                 <span className="text-border">|</span>
-                                <span className="orion-wrap">{material.external_ref ?? material.content_path}</span>
+                                <span className="ikion-wrap">{material.external_ref ?? material.content_path}</span>
                               </>
                             )}
                           </div>

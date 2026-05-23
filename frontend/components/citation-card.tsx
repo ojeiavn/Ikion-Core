@@ -69,7 +69,7 @@ export function CitationCard({
           <button
             onClick={onClick}
             className={cn(
-              "orion-hover-item group flex w-full items-start gap-3 rounded-lg border border-border p-3 text-left transition-all",
+              "ikion-hover-item group flex w-full items-start gap-3 rounded-lg border border-border p-3 text-left transition-all",
               className
             )}
           >

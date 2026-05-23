@@ -1,4 +1,4 @@
-const ACTIVE_WORKSPACE_KEY = "orion.activeWorkspaceId"
+const ACTIVE_WORKSPACE_KEY = "ikion.activeWorkspaceId"
 
 export function getActiveWorkspaceId() {
   if (typeof window === "undefined") return null

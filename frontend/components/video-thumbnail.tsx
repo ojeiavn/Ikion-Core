@@ -2,12 +2,12 @@
 
 import { useMemo } from "react"
 
-import { OrionAsset, getBackendBaseUrl } from "@/lib/orion-api"
+import { IkionAsset, getBackendBaseUrl } from "@/lib/ikion-api"
 import { cn } from "@/lib/utils"
 import { Play } from "lucide-react"
 
 interface VideoThumbnailProps {
-  asset: OrionAsset
+  asset: IkionAsset
   workspaceId?: string | null
   className?: string
   overlayLabel?: string | null

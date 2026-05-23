@@ -12,14 +12,14 @@ import { Progress } from "@/components/ui/progress"
 import { Textarea } from "@/components/ui/textarea"
 import { useActiveWorkspaceId } from "@/hooks/use-active-workspace"
 import {
-  OrionAskResponse,
-  OrionCitation,
-  OrionExamEvaluation,
-  OrionExamPrepProfile,
-  OrionExamRecommendation,
+  IkionAskResponse,
+  IkionCitation,
+  IkionExamEvaluation,
+  IkionExamPrepProfile,
+  IkionExamRecommendation,
   getBackendBaseUrl,
-  orionFetch,
-} from "@/lib/orion-api"
+  ikionFetch,
+} from "@/lib/ikion-api"
 import {
   AlertTriangle,
   BookOpen,
@@ -39,10 +39,10 @@ interface ExamResponse {
   keyConcepts: string[]
   exampleExplanation: string
   commonMistakes: string[]
-  citations: OrionCitation[]
+  citations: IkionCitation[]
 }
 
-function buildExamResponse(question: string, response: OrionAskResponse): ExamResponse {
+function buildExamResponse(question: string, response: IkionAskResponse): ExamResponse {
   const citations = response.citations
 
   const structure = [
@@ -82,16 +82,16 @@ export default function ExamPrepPage() {
   const backendBase = useMemo(() => getBackendBaseUrl(), [])
   const [question, setQuestion] = useState("")
   const [studentAnswer, setStudentAnswer] = useState("")
-  const [profile, setProfile] = useState<OrionExamPrepProfile | null>(null)
+  const [profile, setProfile] = useState<IkionExamPrepProfile | null>(null)
   const [response, setResponse] = useState<ExamResponse | null>(null)
-  const [evaluation, setEvaluation] = useState<OrionExamEvaluation | null>(null)
-  const [activeRecommendation, setActiveRecommendation] = useState<OrionExamRecommendation | null>(null)
+  const [evaluation, setEvaluation] = useState<IkionExamEvaluation | null>(null)
+  const [activeRecommendation, setActiveRecommendation] = useState<IkionExamRecommendation | null>(null)
   const [isLoadingProfile, setIsLoadingProfile] = useState(true)
   const [isGeneratingGuide, setIsGeneratingGuide] = useState(false)
   const [isEvaluating, setIsEvaluating] = useState(false)
   const [isRefreshingRecommendation, setIsRefreshingRecommendation] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [selectedCitation, setSelectedCitation] = useState<OrionCitation | null>(null)
+  const [selectedCitation, setSelectedCitation] = useState<IkionCitation | null>(null)
   const [isResourceViewerOpen, setIsResourceViewerOpen] = useState(false)
 
   const loadProfile = async () => {
@@ -103,7 +103,7 @@ export default function ExamPrepPage() {
     }
     setIsLoadingProfile(true)
     try {
-      const nextProfile = await orionFetch<OrionExamPrepProfile>(`/workspaces/${workspaceId}/exam-prep/profile`)
+      const nextProfile = await ikionFetch<IkionExamPrepProfile>(`/workspaces/${workspaceId}/exam-prep/profile`)
       setProfile(nextProfile)
       setActiveRecommendation(nextProfile.recommended_question)
       if (!question.trim() && nextProfile.recommended_question?.question_text) {
@@ -134,7 +134,7 @@ export default function ExamPrepPage() {
     setIsRefreshingRecommendation(true)
     setError(null)
     try {
-      const recommendation = await orionFetch<OrionExamRecommendation | null>(`/workspaces/${workspaceId}/exam-prep/recommendation`, {
+      const recommendation = await ikionFetch<IkionExamRecommendation | null>(`/workspaces/${workspaceId}/exam-prep/recommendation`, {
         method: "POST",
         body: JSON.stringify({ prefer_inspired: preferInspired }),
       })
@@ -175,7 +175,7 @@ export default function ExamPrepPage() {
         question.trim(),
       ].join("\n\n")
 
-      const grounded = await orionFetch<OrionAskResponse>(`/workspaces/${workspaceId}/ask`, {
+      const grounded = await ikionFetch<IkionAskResponse>(`/workspaces/${workspaceId}/ask`, {
         method: "POST",
         body: JSON.stringify({
           query: examPrompt,
@@ -199,7 +199,7 @@ export default function ExamPrepPage() {
     setIsEvaluating(true)
     setError(null)
     try {
-      const result = await orionFetch<OrionExamEvaluation>(`/workspaces/${workspaceId}/exam-prep/evaluate`, {
+      const result = await ikionFetch<IkionExamEvaluation>(`/workspaces/${workspaceId}/exam-prep/evaluate`, {
         method: "POST",
         body: JSON.stringify({
           exam_question_id: activeRecommendation?.id ?? null,
@@ -245,7 +245,7 @@ export default function ExamPrepPage() {
     }
   }
 
-  const openCitation = (citation: OrionCitation) => {
+  const openCitation = (citation: IkionCitation) => {
     setSelectedCitation(citation)
     setIsResourceViewerOpen(true)
   }
@@ -281,7 +281,7 @@ export default function ExamPrepPage() {
               <CardHeader>
                 <CardTitle className="text-base">Recommended Question</CardTitle>
                 <CardDescription>
-                  Orion picks this using your recent weak areas, previous attempts, lecturer guidance, and uploaded exam materials.
+                  Ikion picks this using your recent weak areas, previous attempts, lecturer guidance, and uploaded exam materials.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -313,7 +313,7 @@ export default function ExamPrepPage() {
                   </>
                 ) : (
                   <p className="text-sm text-muted-foreground">
-                    Upload exam papers and complete a few queries to help Orion build a stronger recommendation.
+                    Upload exam papers and complete a few queries to help Ikion build a stronger recommendation.
                   </p>
                 )}
               </CardContent>
@@ -323,7 +323,7 @@ export default function ExamPrepPage() {
               <CardHeader>
                 <CardTitle className="text-base">Question You Want to Practice</CardTitle>
                 <CardDescription>
-                  Use the recommendation or paste a specific past-paper prompt. Orion will place the generated guide in the output panel on the right.
+                  Use the recommendation or paste a specific past-paper prompt. Ikion will place the generated guide in the output panel on the right.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -353,7 +353,7 @@ export default function ExamPrepPage() {
               <CardHeader>
                 <CardTitle className="text-base">Write Your Answer</CardTitle>
                 <CardDescription>
-                  Draft your answer here, then Orion will evaluate it in the coaching panel on the right using the grounded module corpus and your exam-practice profile.
+                  Draft your answer here, then Ikion will evaluate it in the coaching panel on the right using the grounded module corpus and your exam-practice profile.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -378,7 +378,7 @@ export default function ExamPrepPage() {
                   <div>
                     <CardTitle className="text-base">Generated Guide Output</CardTitle>
                     <CardDescription>
-                      This is where Orion places your grounded answer guide and cited exam support.
+                      This is where Ikion places your grounded answer guide and cited exam support.
                     </CardDescription>
                   </div>
                   <Badge variant={response ? "default" : "secondary"}>
@@ -388,15 +388,15 @@ export default function ExamPrepPage() {
               </CardHeader>
               <CardContent className="space-y-5">
                 {!response ? (
-                  <div className="orion-section-frame rounded-2xl border border-dashed border-border/70 p-5">
+                  <div className="ikion-section-frame rounded-2xl border border-dashed border-border/70 p-5">
                     <p className="text-sm font-medium">Generate a guide from the question panel.</p>
                     <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                      Orion will populate this area with an answer structure, key evidence, a professionally formatted guide, and the source materials it used.
+                      Ikion will populate this area with an answer structure, key evidence, a professionally formatted guide, and the source materials it used.
                     </p>
                   </div>
                 ) : (
                   <>
-                    <div className="orion-section-frame rounded-2xl border border-border/70 p-4">
+                    <div className="ikion-section-frame rounded-2xl border border-border/70 p-4">
                       <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Guide Question</p>
                       <p className="mt-2 text-sm font-medium leading-7">{question}</p>
                     </div>
@@ -429,7 +429,7 @@ export default function ExamPrepPage() {
                       </div>
                       <ul className="grid gap-2">
                         {response.keyConcepts.map((concept) => (
-                          <li key={concept} className="orion-hover-item flex items-start gap-2 rounded-xl border border-border/60 px-3 py-2 text-sm">
+                          <li key={concept} className="ikion-hover-item flex items-start gap-2 rounded-xl border border-border/60 px-3 py-2 text-sm">
                             <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-chart-2" />
                             <span>{concept}</span>
                           </li>
@@ -437,7 +437,7 @@ export default function ExamPrepPage() {
                       </ul>
                     </div>
 
-                    <div className="orion-section-frame space-y-3 rounded-2xl border border-border/70 p-4">
+                    <div className="ikion-section-frame space-y-3 rounded-2xl border border-border/70 p-4">
                       <div className="flex items-center justify-between gap-3">
                         <div className="flex items-center gap-2">
                           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent/20">
@@ -481,7 +481,7 @@ export default function ExamPrepPage() {
                             key={`${citation.asset_id}-${citation.chunk_id}-${index}`}
                             type="button"
                             onClick={() => openCitation(citation)}
-                            className="orion-hover-item flex items-center justify-between gap-3 rounded-xl border border-border/70 px-3 py-2 text-left"
+                            className="ikion-hover-item flex items-center justify-between gap-3 rounded-xl border border-border/70 px-3 py-2 text-left"
                           >
                             <div className="min-w-0">
                               <p className="truncate text-sm font-medium">{citation.asset_title}</p>
@@ -508,7 +508,7 @@ export default function ExamPrepPage() {
                   <div>
                     <CardTitle className="text-base">Evaluation and Coaching</CardTitle>
                     <CardDescription>
-                      Orion places the marked feedback for your written answer here.
+                      Ikion places the marked feedback for your written answer here.
                     </CardDescription>
                   </div>
                   {evaluation && <Badge variant="secondary">{evaluation.band}</Badge>}
@@ -516,10 +516,10 @@ export default function ExamPrepPage() {
               </CardHeader>
               <CardContent className="space-y-5">
                 {!evaluation ? (
-                  <div className="orion-section-frame rounded-2xl border border-dashed border-border/70 p-5">
+                  <div className="ikion-section-frame rounded-2xl border border-dashed border-border/70 p-5">
                     <p className="text-sm font-medium">Submit your answer for evaluation.</p>
                     <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                      Orion will score the answer, identify strengths and gaps, and provide targeted coaching plus a model response.
+                      Ikion will score the answer, identify strengths and gaps, and provide targeted coaching plus a model response.
                     </p>
                   </div>
                 ) : (
@@ -540,7 +540,7 @@ export default function ExamPrepPage() {
                     </div>
 
                     <div className="grid gap-4">
-                      <div className="orion-hover-item rounded-2xl border border-border/70 p-4">
+                      <div className="ikion-hover-item rounded-2xl border border-border/70 p-4">
                         <h3 className="flex items-center gap-2 text-sm font-semibold">
                           <CheckCircle2 className="h-4 w-4 text-chart-2" />
                           Strengths
@@ -555,7 +555,7 @@ export default function ExamPrepPage() {
                         </ul>
                       </div>
 
-                      <div className="orion-hover-item rounded-2xl border border-border/70 p-4">
+                      <div className="ikion-hover-item rounded-2xl border border-border/70 p-4">
                         <h3 className="flex items-center gap-2 text-sm font-semibold">
                           <AlertTriangle className="h-4 w-4 text-destructive" />
                           Improve Next
@@ -579,7 +579,7 @@ export default function ExamPrepPage() {
                       </div>
                     )}
 
-                    <div className="orion-section-frame space-y-3 rounded-2xl border border-border/70 p-4">
+                    <div className="ikion-section-frame space-y-3 rounded-2xl border border-border/70 p-4">
                       <div className="flex items-center gap-2">
                         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent/20">
                           <Lightbulb className="h-4 w-4 text-accent" />
@@ -589,7 +589,7 @@ export default function ExamPrepPage() {
                       <FormattedRichText text={evaluation.guidance} />
                     </div>
 
-                    <div className="orion-section-frame space-y-3 rounded-2xl border border-border/70 p-4">
+                    <div className="ikion-section-frame space-y-3 rounded-2xl border border-border/70 p-4">
                       <h3 className="text-sm font-semibold">Model Answer Reference</h3>
                       <FormattedRichText text={evaluation.model_answer} />
                     </div>
@@ -619,20 +619,20 @@ export default function ExamPrepPage() {
                     </div>
                     <Progress value={profile.readiness_score} className="h-2" />
                     <div className="grid gap-3 sm:grid-cols-2">
-                      <div className="orion-hover-item rounded-2xl border border-border/55 border-t-transparent p-3">
+                      <div className="ikion-hover-item rounded-2xl border border-border/55 border-t-transparent p-3">
                         <p className="text-xs uppercase tracking-wide text-muted-foreground">Exam Prep</p>
                         <p className="mt-1 text-lg font-semibold">{profile.exam_attempt_readiness_score}%</p>
                         <p className="text-xs text-muted-foreground">Dominant signal from answer quality, consistency, and evidence use.</p>
                       </div>
-                      <div className="orion-hover-item rounded-2xl border border-border/55 border-t-transparent p-3">
-                        <p className="text-xs uppercase tracking-wide text-muted-foreground">Ask Orion</p>
+                      <div className="ikion-hover-item rounded-2xl border border-border/55 border-t-transparent p-3">
+                        <p className="text-xs uppercase tracking-wide text-muted-foreground">Ask Ikion</p>
                         <p className="mt-1 text-lg font-semibold">{profile.chat_readiness_score}%</p>
                         <p className="text-xs text-muted-foreground">
                           Secondary signal from {profile.chat_activity_count} exam-style interaction{profile.chat_activity_count === 1 ? "" : "s"}.
                         </p>
                       </div>
                     </div>
-                    <p className="orion-section-frame rounded-2xl border border-dashed border-border/70 px-3 py-2 text-xs leading-5 text-muted-foreground">
+                    <p className="ikion-section-frame rounded-2xl border border-dashed border-border/70 px-3 py-2 text-xs leading-5 text-muted-foreground">
                       This score is intentionally harsh. Repeated strong answers in Exam Prep move it far more than conversational fluency in chat.
                     </p>
                     <div className="flex flex-wrap gap-1.5">
@@ -659,7 +659,7 @@ export default function ExamPrepPage() {
               <CardContent className="space-y-3">
                 {profile?.lecturer_exam_guidance?.length ? (
                   profile.lecturer_exam_guidance.slice(0, 3).map((item) => (
-                    <div key={item} className="orion-hover-item rounded-lg border border-border p-3 text-sm text-muted-foreground">
+                    <div key={item} className="ikion-hover-item rounded-lg border border-border p-3 text-sm text-muted-foreground">
                       {item}
                     </div>
                   ))
@@ -677,7 +677,7 @@ export default function ExamPrepPage() {
               <CardContent className="space-y-3">
                 {recentAttempts.length > 0 ? (
                   recentAttempts.map((attempt) => (
-                    <div key={attempt.id} className="orion-hover-item rounded-lg border border-border p-3">
+                    <div key={attempt.id} className="ikion-hover-item rounded-lg border border-border p-3">
                       <div className="flex items-center justify-between gap-3">
                         <p className="line-clamp-2 text-sm font-medium">{attempt.prompt_text}</p>
                         <Badge variant="secondary">{Math.round(attempt.score * 100)}%</Badge>
@@ -706,7 +706,7 @@ export default function ExamPrepPage() {
           <DialogHeader>
             <DialogTitle>{selectedCitation?.asset_title ?? "Resource material"}</DialogTitle>
             <DialogDescription>
-              Opens the cited source material in Orion so you can read it while writing your exam answer.
+              Opens the cited source material in Ikion so you can read it while writing your exam answer.
             </DialogDescription>
           </DialogHeader>
           <div className="flex items-center justify-between gap-2">

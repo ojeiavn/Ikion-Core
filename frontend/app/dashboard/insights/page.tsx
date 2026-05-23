@@ -8,12 +8,12 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useActiveWorkspaceId } from "@/hooks/use-active-workspace"
-import { OrionInsights, OrionQueryEvent, formatUtcTimestamp, orionFetch } from "@/lib/orion-api"
+import { IkionInsights, IkionQueryEvent, formatUtcTimestamp, ikionFetch } from "@/lib/ikion-api"
 
 export default function InsightsPage() {
   const { workspaceId } = useActiveWorkspaceId()
-  const [insights, setInsights] = useState<OrionInsights | null>(null)
-  const [queries, setQueries] = useState<OrionQueryEvent[]>([])
+  const [insights, setInsights] = useState<IkionInsights | null>(null)
+  const [queries, setQueries] = useState<IkionQueryEvent[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -31,8 +31,8 @@ export default function InsightsPage() {
 
       try {
         const [queryEvents, summary] = await Promise.all([
-          orionFetch<OrionQueryEvent[]>(`/workspaces/${workspaceId}/queries`),
-          orionFetch<OrionInsights>(`/workspaces/${workspaceId}/insights`),
+          ikionFetch<IkionQueryEvent[]>(`/workspaces/${workspaceId}/queries`),
+          ikionFetch<IkionInsights>(`/workspaces/${workspaceId}/insights`),
         ])
         setQueries(queryEvents)
         setInsights(summary)
@@ -86,7 +86,7 @@ export default function InsightsPage() {
           {(insights.llm_insights?.student_summary || insights.llm_insights?.lecturer_summary) && (
             <div className="grid gap-4 lg:grid-cols-2">
               {insights.llm_insights?.student_summary && (
-                <Card className="orion-neon-card border-accent/25 bg-accent/5">
+                <Card className="ikion-neon-card border-accent/25 bg-accent/5">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-base">Student Summary</CardTitle>
                   </CardHeader>
@@ -96,7 +96,7 @@ export default function InsightsPage() {
                 </Card>
               )}
               {insights.llm_insights?.lecturer_summary && (
-                <Card className="orion-neon-card border-accent/25 bg-accent/5">
+                <Card className="ikion-neon-card border-accent/25 bg-accent/5">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-base">Lecturer Actions</CardTitle>
                   </CardHeader>

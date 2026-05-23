@@ -1,8 +1,8 @@
-# Orion — AI Study Assistant
+# Ikion — AI Study Assistant
 
 > **Course-grounded AI for universities.** Ask questions, get answers with citations, jump to exact lecture moments, and prepare for exams with confidence.
 
-Orion is a full-stack Retrieval-Augmented Generation (RAG) platform designed for higher education. It ingests course materials (PDFs, lecture videos, transcripts, notices), builds searchable vector indexes, and serves grounded answers to students, analytics to lecturers, and content management tools to administrators.
+Ikion is a full-stack Retrieval-Augmented Generation (RAG) platform designed for higher education. It ingests course materials (PDFs, lecture videos, transcripts, notices), builds searchable vector indexes, and serves grounded answers to students, analytics to lecturers, and content management tools to administrators.
 
 ---
 
@@ -10,8 +10,8 @@ Orion is a full-stack Retrieval-Augmented Generation (RAG) platform designed for
 
 | Capability | Description |
 |------------|-------------|
-| **📚 Course-Grounded AI** | Students ask questions in natural language. Orion answers using only the uploaded course materials — every response includes numbered citations linked to source documents. |
-| **🎬 Lecture Video Navigation** | Upload lecture recordings (or link external videos). Orion auto-generates transcripts and can jump students to the exact timestamp where a concept is explained. |
+| **📚 Course-Grounded AI** | Students ask questions in natural language. Ikion answers using only the uploaded course materials — every response includes numbered citations linked to source documents. |
+| **🎬 Lecture Video Navigation** | Upload lecture recordings (or link external videos). Ikion auto-generates transcripts and can jump students to the exact timestamp where a concept is explained. |
 | **📝 Exam Preparation** | Parses past exam papers and mark schemes. Recommends questions based on student readiness, evaluates answers against rubrics, and generates inspired practice variants. |
 | **📊 Query Insights (AQIR)** | Lecturers and admins see cohort-wide analytics: common misconceptions, topic coverage gaps, repeated weak queries, and AI-generated teaching focus summaries. |
 | **🏢 Workspace Management** | Admins create workspaces (courses/modules), upload materials, publish guidance packs (custom LLM instructions), and rebuild search indexes on demand. |
@@ -43,7 +43,7 @@ Orion is a full-stack Retrieval-Augmented Generation (RAG) platform designed for
 
 ### Key Design Patterns
 
-- **Runtime-as-DI** — `OrionCoreRuntime` wires ~20 services as a single composition root.
+- **Runtime-as-DI** — `IkionCoreRuntime` wires ~20 services as a single composition root.
 - **Immutable Corpus Versions** — Every index build creates a versioned snapshot (chunks + FAISS + manifest). Old versions remain recoverable.
 - **Multi-Variant RAG** — Queries are expanded into variants (condensed, decomposed, history-rewritten), fused with RRF, and reranked with MMR + knowledge-graph alignment.
 - **Reflection Pass** — Every LLM answer goes through deterministic post-processing (LaTeX normalization, citation enforcement, follow-up focus injection).
@@ -71,12 +71,12 @@ project-root/
 │   │   ├── playback-moments-panel.tsx
 │   │   └── video-player-card.tsx
 │   ├── lib/
-│   │   ├── orion-api.ts      # Typed fetch wrapper + API client
+│   │   ├── ikion-api.ts      # Typed fetch wrapper + API client
 │   │   └── workspace-store.ts # localStorage active workspace
 │   └── public/               # Logos, icons, mock UI assets
 │
 ├── backend/                  # FastAPI application
-│   ├── orion/backend/
+│   ├── ikion/backend/
 │   │   ├── app.py            # All HTTP routes & auth middleware
 │   │   ├── models.py         # Domain dataclasses
 │   │   ├── runtime.py        # Service wiring / DI container
@@ -127,7 +127,7 @@ pip install -r requirements.txt
 # cp .env.example .env
 
 # Run the API server
-venv/bin/uvicorn orion.backend.app:app --reload --port 8000
+venv/bin/uvicorn ikion.backend.app:app --reload --port 8000
 ```
 
 **Bootstrap the first admin:**
@@ -175,7 +175,7 @@ npm run dev   # Starts on http://localhost:3000
 
 ## 🛡️ Auth & Roles
 
-Orion uses **PBKDF2-hashed passwords** with **HTTP-only cookie sessions**.
+Ikion uses **PBKDF2-hashed passwords** with **HTTP-only cookie sessions**.
 
 | Role | Capabilities |
 |------|--------------|
@@ -187,7 +187,7 @@ Orion uses **PBKDF2-hashed passwords** with **HTTP-only cookie sessions**.
 
 ## 🔌 API Highlights
 
-The backend exposes a comprehensive REST API (see `backend/orion/backend/app.py` for all routes):
+The backend exposes a comprehensive REST API (see `backend/ikion/backend/app.py` for all routes):
 
 - `POST /ask` — Grounded Q&A with citations & playback
 - `POST /retrieve` — Semantic + lexical search over corpus
@@ -207,7 +207,7 @@ All endpoints are workspace-scoped and protected by role-based guards.
 ```bash
 # Backend tests
 cd backend
-pytest orion/backend/tests/
+pytest ikion/backend/tests/
 
 # Frontend typecheck
 cd frontend
@@ -243,11 +243,11 @@ This project is private and proprietary.
 
 ## 🤝 Contributing
 
-Orion is an active MVP. If you're working on it, refer to `backend/README.md` and `frontend/README.md` for module-specific conventions and legacy notes.
+Ikion is an active MVP. If you're working on it, refer to `backend/README.md` and `frontend/README.md` for module-specific conventions and legacy notes.
 
 ---
 
 <p align="center">
-  <strong>Orion — Grounded AI for Higher Education</strong><br/>
+  <strong>Ikion — Grounded AI for Higher Education</strong><br/>
   Built with Next.js, FastAPI, and OpenAI.
 </p>

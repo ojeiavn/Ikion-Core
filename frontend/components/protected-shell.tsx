@@ -6,11 +6,11 @@ import { usePathname, useRouter } from "next/navigation"
 import { AppHeader } from "@/components/app-header"
 import { AppSidebar } from "@/components/app-sidebar"
 import { roleHomePath, useAuth } from "@/components/auth-provider"
-import { OrionUserRole } from "@/lib/orion-api"
+import { IkionUserRole } from "@/lib/ikion-api"
 
 interface ProtectedShellProps {
   children: React.ReactNode
-  allowedRoles: OrionUserRole[]
+  allowedRoles: IkionUserRole[]
 }
 
 export function ProtectedShell({ children, allowedRoles }: ProtectedShellProps) {
@@ -34,7 +34,7 @@ export function ProtectedShell({ children, allowedRoles }: ProtectedShellProps) 
 
   useEffect(() => {
     if (typeof window === "undefined") return
-    const saved = window.localStorage.getItem("orion.sidebar.collapsed")
+    const saved = window.localStorage.getItem("ikion.sidebar.collapsed")
     if (saved === "1") {
       setSidebarCollapsed(true)
     }
@@ -44,7 +44,7 @@ export function ProtectedShell({ children, allowedRoles }: ProtectedShellProps) 
     setSidebarCollapsed((current) => {
       const next = !current
       if (typeof window !== "undefined") {
-        window.localStorage.setItem("orion.sidebar.collapsed", next ? "1" : "0")
+        window.localStorage.setItem("ikion.sidebar.collapsed", next ? "1" : "0")
       }
       return next
     })

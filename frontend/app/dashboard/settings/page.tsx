@@ -7,19 +7,19 @@ import { useAuth } from "@/components/auth-provider"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { OrionSessionRecord, formatUtcTimestamp, orionFetch } from "@/lib/orion-api"
+import { IkionSessionRecord, formatUtcTimestamp, ikionFetch } from "@/lib/ikion-api"
 import { LogOut, ShieldCheck, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 
 export default function SettingsPage() {
   const { user, sessionId, logout } = useAuth()
   const router = useRouter()
-  const [sessions, setSessions] = useState<OrionSessionRecord[]>([])
+  const [sessions, setSessions] = useState<IkionSessionRecord[]>([])
   const [error, setError] = useState<string | null>(null)
 
   const loadSessions = async () => {
     try {
-      const sessionList = await orionFetch<OrionSessionRecord[]>("/auth/sessions")
+      const sessionList = await ikionFetch<IkionSessionRecord[]>("/auth/sessions")
       setSessions(sessionList)
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to load sessions.")
@@ -32,7 +32,7 @@ export default function SettingsPage() {
 
   const revokeSession = async (id: string) => {
     try {
-      await orionFetch(`/auth/sessions/${id}`, { method: "DELETE" })
+      await ikionFetch(`/auth/sessions/${id}`, { method: "DELETE" })
       if (id === sessionId) {
         await logout()
         router.replace("/login")
@@ -51,7 +51,7 @@ export default function SettingsPage() {
     <div className="space-y-6 p-6 lg:p-8">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Account Settings</h1>
-        <p className="mt-1 text-muted-foreground">Inspect your current Orion identity and active sessions.</p>
+        <p className="mt-1 text-muted-foreground">Inspect your current Ikion identity and active sessions.</p>
         {error && <p className="mt-2 text-sm text-destructive">{error}</p>}
       </div>
 
@@ -61,7 +61,7 @@ export default function SettingsPage() {
             <ShieldCheck className="h-4 w-4" />
             Profile
           </CardTitle>
-          <CardDescription>Current authenticated Orion user.</CardDescription>
+          <CardDescription>Current authenticated Ikion user.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-2 text-sm">
           <p><strong>Name:</strong> {user?.full_name}</p>

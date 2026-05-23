@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useActiveWorkspaceId } from "@/hooks/use-active-workspace"
-import { OrionInsights, OrionQueryEvent, formatUtcTimestamp, orionFetch } from "@/lib/orion-api"
+import { IkionInsights, IkionQueryEvent, formatUtcTimestamp, ikionFetch } from "@/lib/ikion-api"
 import {
   AlertTriangle,
   ArrowUpRight,
@@ -31,8 +31,8 @@ import { toast } from "sonner"
 export default function AQIRPage() {
   const { workspaceId } = useActiveWorkspaceId()
   const [limit, setLimit] = useState("200")
-  const [queries, setQueries] = useState<OrionQueryEvent[]>([])
-  const [insights, setInsights] = useState<OrionInsights | null>(null)
+  const [queries, setQueries] = useState<IkionQueryEvent[]>([])
+  const [insights, setInsights] = useState<IkionInsights | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -49,8 +49,8 @@ export default function AQIRPage() {
         }
 
         const [queryEvents, summary] = await Promise.all([
-          orionFetch<OrionQueryEvent[]>(`/workspaces/${workspaceId}/queries?limit=${limit}`),
-          orionFetch<OrionInsights>(`/workspaces/${workspaceId}/insights?limit=${limit}`),
+          ikionFetch<IkionQueryEvent[]>(`/workspaces/${workspaceId}/queries?limit=${limit}`),
+          ikionFetch<IkionInsights>(`/workspaces/${workspaceId}/insights?limit=${limit}`),
         ])
 
         setQueries(queryEvents)
@@ -146,7 +146,7 @@ export default function AQIRPage() {
       </div>
 
       {insights?.llm_insights?.lecturer_summary && (
-        <Card className="orion-neon-card border-accent/25 bg-accent/5">
+        <Card className="ikion-neon-card border-accent/25 bg-accent/5">
           <CardHeader className="pb-2">
             <CardTitle className="text-base">Lecturer Strategy Summary</CardTitle>
           </CardHeader>

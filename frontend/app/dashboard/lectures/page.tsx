@@ -11,13 +11,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { useActiveWorkspaceId } from "@/hooks/use-active-workspace"
 import {
-  OrionAsset,
-  OrionInsights,
-  OrionPlayback,
+  IkionAsset,
+  IkionInsights,
+  IkionPlayback,
   formatUtcTimestamp,
   getBackendBaseUrl,
-  orionFetch,
-} from "@/lib/orion-api"
+  ikionFetch,
+} from "@/lib/ikion-api"
 import { Calendar, ExternalLink, Search, Sparkles } from "lucide-react"
 
 function formatPlaybackTimestamp(seconds?: number | null) {
@@ -28,7 +28,7 @@ function formatPlaybackTimestamp(seconds?: number | null) {
   return `${mins}:${secs.toString().padStart(2, "0")}`
 }
 
-function canUseProxyPlayback(asset: OrionAsset) {
+function canUseProxyPlayback(asset: IkionAsset) {
   if (asset.content_path) return true
   if (typeof asset.metadata?.drive_file_id === "string" && asset.metadata.drive_file_id) return true
 
@@ -47,7 +47,7 @@ type LectureTranscriptState = {
   error: string | null
 }
 
-function getLectureTranscriptState(asset: OrionAsset, transcriptVideoIds: Set<string>): LectureTranscriptState {
+function getLectureTranscriptState(asset: IkionAsset, transcriptVideoIds: Set<string>): LectureTranscriptState {
   const linkedTranscriptAssetId =
     typeof asset.metadata?.linked_transcript_asset_id === "string" ? asset.metadata.linked_transcript_asset_id : null
   const autoStatusRaw =
@@ -77,11 +77,11 @@ export default function LecturesPage() {
   const { workspaceId } = useActiveWorkspaceId()
   const backendBase = useMemo(() => getBackendBaseUrl(), [])
   const [searchQuery, setSearchQuery] = useState("")
-  const [assets, setAssets] = useState<OrionAsset[]>([])
-  const [insights, setInsights] = useState<OrionInsights | null>(null)
+  const [assets, setAssets] = useState<IkionAsset[]>([])
+  const [insights, setInsights] = useState<IkionInsights | null>(null)
   const [selectedLectureId, setSelectedLectureId] = useState<string | null>(null)
   const [transcriptQuery, setTranscriptQuery] = useState("")
-  const [transcriptResults, setTranscriptResults] = useState<OrionPlayback[]>([])
+  const [transcriptResults, setTranscriptResults] = useState<IkionPlayback[]>([])
   const [isSearchingMoments, setIsSearchingMoments] = useState(false)
   const [isGeneratingTranscript, setIsGeneratingTranscript] = useState(false)
   const [transcriptError, setTranscriptError] = useState<string | null>(null)
@@ -101,8 +101,8 @@ export default function LecturesPage() {
         }
 
         const [assetList, summary] = await Promise.all([
-          orionFetch<OrionAsset[]>(`/workspaces/${workspaceId}/assets`),
-          orionFetch<OrionInsights>(`/workspaces/${workspaceId}/insights`),
+          ikionFetch<IkionAsset[]>(`/workspaces/${workspaceId}/assets`),
+          ikionFetch<IkionInsights>(`/workspaces/${workspaceId}/insights`),
         ])
 
         setAssets(assetList)
@@ -163,7 +163,7 @@ export default function LecturesPage() {
 
   const refreshLectureAssets = async () => {
     if (!workspaceId) return
-    const assetList = await orionFetch<OrionAsset[]>(`/workspaces/${workspaceId}/assets`, { timeoutMs: 20000 })
+    const assetList = await ikionFetch<IkionAsset[]>(`/workspaces/${workspaceId}/assets`, { timeoutMs: 20000 })
     setAssets(assetList)
   }
 
@@ -182,7 +182,7 @@ export default function LecturesPage() {
         selectedLectureTranscriptState?.status === "ready"
           ? "Use transcript search to jump directly to the most relevant lecture moments."
           : selectedLectureTranscriptState?.status === "queued" || selectedLectureTranscriptState?.status === "processing"
-            ? "Orion is generating a timestamped transcript for this lecture now."
+            ? "Ikion is generating a timestamped transcript for this lecture now."
             : selectedLectureTranscriptState?.status === "unsupported"
               ? "This lecture is externally referenced only. Upload the lecture media or add a manual transcript to unlock transcript search."
               : "Generate or register a timestamped transcript for this lecture to unlock transcript query search.",
@@ -204,7 +204,7 @@ export default function LecturesPage() {
     setIsGeneratingTranscript(true)
     setTranscriptError(null)
     try {
-      await orionFetch<{ status: string; scheduled: boolean; linked_transcript_asset_id: string | null; error: string | null }>(
+      await ikionFetch<{ status: string; scheduled: boolean; linked_transcript_asset_id: string | null; error: string | null }>(
         `/workspaces/${workspaceId}/videos/${selectedLecture.id}/transcript/generate`,
         {
           method: "POST",
@@ -225,7 +225,7 @@ export default function LecturesPage() {
     setIsSearchingMoments(true)
     setTranscriptError(null)
     try {
-      const results = await orionFetch<OrionPlayback[]>(`/workspaces/${workspaceId}/playback/search`, {
+      const results = await ikionFetch<IkionPlayback[]>(`/workspaces/${workspaceId}/playback/search`, {
         method: "POST",
         body: JSON.stringify({
           query: transcriptQuery.trim(),
@@ -308,7 +308,7 @@ export default function LecturesPage() {
                       Find in this lecture
                     </div>
                     <p className="mt-1 text-sm text-muted-foreground">
-                      Ask about a concept, derivation, worked example, or exam topic and Orion will pull the top 3 matching lecture moments.
+                      Ask about a concept, derivation, worked example, or exam topic and Ikion will pull the top 3 matching lecture moments.
                     </p>
                     <form onSubmit={handleTranscriptSearch} className="mt-4 space-y-3">
                       <Input
@@ -336,7 +336,7 @@ export default function LecturesPage() {
                       <div className="mt-3 rounded-xl border border-border/70 bg-background/40 p-3">
                         <p className="text-sm text-muted-foreground">
                           {selectedLectureTranscriptState?.status === "queued" || selectedLectureTranscriptState?.status === "processing"
-                            ? "Orion is generating the timed transcript for this lecture. This panel will unlock automatically when it is ready."
+                            ? "Ikion is generating the timed transcript for this lecture. This panel will unlock automatically when it is ready."
                             : selectedLectureTranscriptState?.status === "unsupported"
                               ? selectedLectureTranscriptState.error || "This lecture needs an uploaded media file or a manual linked transcript before transcript search can work."
                               : selectedLectureTranscriptState?.status === "failed"
@@ -376,7 +376,7 @@ export default function LecturesPage() {
                       {selectedLectureTranscriptState?.status === "ready"
                         ? "Search the transcript to reveal the three most relevant moments for this lecture."
                         : selectedLectureTranscriptState?.status === "queued" || selectedLectureTranscriptState?.status === "processing"
-                          ? "Transcript generation is in progress. Orion will unlock the top matching moments as soon as the transcript is ready."
+                          ? "Transcript generation is in progress. Ikion will unlock the top matching moments as soon as the transcript is ready."
                           : "This lecture does not have a linked timestamped transcript yet."}
                     </div>
                   )}

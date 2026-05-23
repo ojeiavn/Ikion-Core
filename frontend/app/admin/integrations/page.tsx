@@ -8,7 +8,7 @@ export default function AdminIntegrationsPage() {
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Integrations</h1>
         <p className="mt-1 text-muted-foreground">
-          External system integrations are not wired yet in this local Orion MVP.
+          External system integrations are not wired yet in this local Ikion MVP.
         </p>
       </div>
 

@@ -1,11 +1,11 @@
 "use client"
 
 import { Badge } from "@/components/ui/badge"
-import { OrionExamRecommendation } from "@/lib/orion-api"
+import { IkionExamRecommendation } from "@/lib/ikion-api"
 import { cn } from "@/lib/utils"
 
 interface ExamRecommendationCardProps {
-  recommendation: OrionExamRecommendation
+  recommendation: IkionExamRecommendation
   compact?: boolean
   className?: string
 }
@@ -16,7 +16,7 @@ export function ExamRecommendationCard({
   className,
 }: ExamRecommendationCardProps) {
   return (
-    <div className={cn("orion-recommendation-card space-y-4 rounded-[1.35rem] border p-4", className)}>
+    <div className={cn("ikion-recommendation-card space-y-4 rounded-[1.35rem] border p-4", className)}>
       <div className="flex flex-wrap items-center gap-2">
         <Badge variant="outline">
           {recommendation.origin_type === "uploaded" ? "Uploaded exam question" : "Inspired exam question"}
@@ -27,7 +27,7 @@ export function ExamRecommendationCard({
         {recommendation.mark_scheme_available && <Badge variant="secondary">Mark scheme linked</Badge>}
       </div>
 
-      <div className="orion-question-panel space-y-2 rounded-2xl border p-4">
+      <div className="ikion-question-panel space-y-2 rounded-2xl border p-4">
         <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-accent">Recommended Question</p>
         <p className={cn("font-semibold leading-relaxed text-foreground", compact ? "text-sm" : "text-[1.02rem]")}>
           {recommendation.question_text}
@@ -37,7 +37,7 @@ export function ExamRecommendationCard({
 
       <div className={cn("grid gap-3", compact ? "grid-cols-1" : "md:grid-cols-2")}>
         <div className="rounded-2xl border border-border/70 bg-background/72 p-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Why Orion Chose This</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Why Ikion Chose This</p>
           <p className="mt-2 text-sm leading-6 text-muted-foreground">{recommendation.rationale}</p>
           {recommendation.why_this_now.length > 0 && (
             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">

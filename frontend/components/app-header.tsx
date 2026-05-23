@@ -42,7 +42,7 @@ export function AppHeader({
   }
 
   const activeRole = user?.role ?? userRole
-  const initials = (user?.full_name ?? "Orion User")
+  const initials = (user?.full_name ?? "Ikion User")
     .split(" ")
     .filter(Boolean)
     .slice(0, 2)
@@ -57,7 +57,7 @@ export function AppHeader({
           <Button
             variant="ghost"
             size="icon"
-            className="orion-neon-chip h-9 w-9 text-muted-foreground"
+            className="ikion-neon-chip h-9 w-9 text-muted-foreground"
             onClick={onToggleSidebar}
             aria-label={sidebarCollapsed ? "Expand menu" : "Collapse menu"}
           >
@@ -86,7 +86,7 @@ export function AppHeader({
         {/* Theme Toggle */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="orion-neon-chip h-9 w-9">
+            <Button variant="ghost" size="icon" className="ikion-neon-chip h-9 w-9">
               <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
               <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
               <span className="sr-only">Toggle theme</span>
@@ -109,7 +109,7 @@ export function AppHeader({
         </DropdownMenu>
 
         {/* Notifications */}
-        <Button variant="ghost" size="icon" className="orion-neon-chip relative h-9 w-9">
+        <Button variant="ghost" size="icon" className="ikion-neon-chip relative h-9 w-9">
           <Bell className="h-4 w-4" />
           <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-accent" />
           <span className="sr-only">Notifications</span>
@@ -126,7 +126,7 @@ export function AppHeader({
                 </AvatarFallback>
               </Avatar>
               <div className="hidden min-w-0 max-w-[12rem] flex-col items-start text-left lg:flex">
-                <span className="truncate text-sm font-medium">{user?.full_name ?? "Orion User"}</span>
+                <span className="truncate text-sm font-medium">{user?.full_name ?? "Ikion User"}</span>
                 <span className="text-xs text-muted-foreground">{roleLabels[activeRole]}</span>
               </div>
               <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
@@ -135,8 +135,8 @@ export function AppHeader({
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium">{user?.full_name ?? "Orion User"}</p>
-                <p className="text-xs text-muted-foreground">{user?.email ?? "no-session@orion.local"}</p>
+                <p className="text-sm font-medium">{user?.full_name ?? "Ikion User"}</p>
+                <p className="text-xs text-muted-foreground">{user?.email ?? "no-session@ikion.local"}</p>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
